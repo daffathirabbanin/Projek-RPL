@@ -1,0 +1,25 @@
+# Windows temp files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# PHP / Composer
+vendor/
+composer.lock
+
+# App logs and cache
+app/logs/*
+!app/logs/.gitkeep
+
+# Uploaded documents (keep the folder structure but ignore uploaded files)
+public/uploads/dokumen/*
+!public/uploads/dokumen/.gitkeep
