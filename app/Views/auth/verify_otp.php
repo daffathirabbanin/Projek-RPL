@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lupa Password | MI Nurul Ikhlas Al-Ayubi</title>
+    <title>Verifikasi OTP | MI Nurul Ikhlas Al-Ayubi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -15,10 +15,8 @@
 
     <!-- Left Screen (Image / Graphic) -->
     <div class="hidden lg:flex w-1/2 relative items-end justify-start overflow-hidden p-12">
-        <!-- School Image Background -->
         <img src="<?= base_url('img/sekolah.jpg') ?>" alt="Sekolah MIS Nurul Ikhlas" class="absolute inset-0 w-full h-full object-cover" onerror="this.outerHTML='<div class=\'absolute inset-0 w-full h-full bg-slate-200\'></div>'">
         
-        <!-- Emerald Overlay Gradient -->
         <div class="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-900/80 to-emerald-900/20 mix-blend-multiply"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-900/50 to-transparent"></div>
         
@@ -27,10 +25,10 @@
                 <img src="<?= base_url('img/logo.jpeg') ?>" alt="Logo" class="w-full h-full object-cover rounded-full">
             </div>
             <h1 class="text-4xl lg:text-5xl font-black text-white mb-4 uppercase tracking-tight leading-tight drop-shadow-md">
-                Lupa <br> <span class="text-emerald-400">Password</span>
+                Verifikasi <br> <span class="text-emerald-400">Keamanan</span>
             </h1>
             <p class="text-emerald-50 text-lg max-w-md font-medium leading-relaxed drop-shadow-sm">
-                Atur ulang password Anda <br> MI Nurul Ikhlas Al-Ayubi
+                Masukkan kode yang kami kirimkan ke email Anda.
             </p>
             
             <div class="mt-10 inline-flex items-center space-x-3 px-5 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
@@ -46,19 +44,19 @@
     <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-8 lg:p-12 relative h-full bg-white overflow-y-auto">
         <div class="w-full max-w-[420px] py-8 lg:py-0">
             <!-- Back Button -->
-            <a href="<?= base_url('auth') ?>" class="inline-flex items-center space-x-2 text-slate-400 hover:text-emerald-600 transition-all font-bold text-xs uppercase tracking-[0.1em] group mb-8">
+            <a href="<?= base_url('auth/forgot_password') ?>" class="inline-flex items-center space-x-2 text-slate-400 hover:text-emerald-600 transition-all font-bold text-xs uppercase tracking-[0.1em] group mb-8">
                 <div class="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-emerald-50 flex items-center justify-center transition-colors">
                     <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
                 </div>
-                <span>Kembali ke Login</span>
+                <span>Kembali</span>
             </a>
 
             <div class="text-center lg:text-left mb-6">
                 <div class="w-16 h-16 flex items-center justify-center mb-4 lg:hidden mx-auto bg-white rounded-full p-1 shadow-md border border-slate-100">
                     <img src="<?= base_url('img/logo.jpeg') ?>" alt="Logo" class="w-full h-full object-cover rounded-full">
                 </div>
-                <h2 class="text-3xl font-black text-slate-800 uppercase tracking-tight mb-2">Atur Ulang Password</h2>
-                <p class="text-slate-500 font-medium text-sm">Masukkan email yang terdaftar untuk membuat password baru.</p>
+                <h2 class="text-3xl font-black text-slate-800 uppercase tracking-tight mb-2">Verifikasi OTP</h2>
+                <p class="text-slate-500 font-medium text-sm">Masukkan 6 digit kode OTP yang telah dikirim ke email <strong><?= $_SESSION['reset_email'] ?? '' ?></strong>.</p>
             </div>
 
             <!-- Pesan Notifikasi -->
@@ -66,27 +64,26 @@
                 <div class="bg-red-50 text-red-600 p-4 rounded-lg text-sm font-bold mb-6 border border-red-200 flex items-center shadow-sm">
                     <i class="fas fa-exclamation-circle mr-3 text-lg"></i>
                     <?php 
-                        if($_GET['error'] == 'email_not_found') echo "Email tidak ditemukan!";
-                        else if($_GET['error'] == 'password_mismatch') echo "Password dan konfirmasi tidak cocok!";
+                        if($_GET['error'] == 'invalid_otp') echo "Kode OTP salah atau sudah kedaluwarsa!";
                     ?>
                 </div>
             <?php endif; ?>
 
-            <form action="<?= base_url('auth/forgot_password_process') ?>" method="POST" class="space-y-4">
-                <!-- Email -->
+            <form action="<?= base_url('auth/verify_otp_process') ?>" method="POST" class="space-y-4">
+                <!-- OTP -->
                 <div>
-                    <label for="email" class="block text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1.5">Alamat Email Terdaftar</label>
+                    <label for="otp" class="block text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-1.5">Kode OTP (6 Digit)</label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-emerald-600 text-slate-400">
-                            <i class="fas fa-envelope text-sm"></i>
+                            <i class="fas fa-key text-sm"></i>
                         </div>
-                        <input type="email" id="email" name="email" class="block w-full pl-10 pr-4 py-3 border-2 border-slate-200/80 rounded-lg text-sm text-slate-800 placeholder-slate-400 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-0 focus:border-emerald-500 transition-all shadow-sm" placeholder="Masukkan Email Anda" required>
+                        <input type="text" id="otp" name="otp" maxlength="6" pattern="\d{6}" class="block w-full pl-10 pr-4 py-3 border-2 border-slate-200/80 rounded-lg text-lg text-center tracking-[0.5em] font-bold text-slate-800 placeholder-slate-400 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-0 focus:border-emerald-500 transition-all shadow-sm" placeholder="------" required>
                     </div>
                 </div>
 
                 <button type="submit" class="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-lg shadow-emerald-600/20 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 hover:shadow-emerald-600/30 transition-all active:scale-[0.98] uppercase tracking-[0.15em] mt-6 group">
-                    <span>Kirim Kode Verifikasi</span>
-                    <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+                    <span>Verifikasi Kode</span>
+                    <i class="fas fa-check-circle ml-3 group-hover:scale-110 transition-transform"></i>
                 </button>
             </form>
         </div>

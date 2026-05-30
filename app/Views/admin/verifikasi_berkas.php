@@ -7,7 +7,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#FAFAFA}
 .card-hover{transition:all .3s cubic-bezier(.4,0,.2,1)}.card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 15px -3px rgba(0,0,0,.05)}
 </style>
 </head>
@@ -16,12 +16,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc}
     <?php require_once '../app/Views/admin/_sidebar.php'; adminSidebar('pendaftar'); ?>
 
     <main class="flex-1 flex flex-col h-full overflow-y-auto">
-        <header class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-200/60 flex items-center space-x-4 sticky top-0 z-10">
-            <a href="<?= base_url('admin/pendaftar') ?>" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors shadow-sm"><i class="fas fa-arrow-left text-sm text-slate-500"></i></a>
+        <header class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-200/60 flex justify-between items-center sticky top-0 z-30">
             <div>
-                <h2 class="text-xl font-black text-slate-800 tracking-tight">DETAIL & VERIFIKASI</h2>
-                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-0.5">REG-<?= str_pad($data['pendaftaran']['id'], 4, '0', STR_PAD_LEFT) ?></p>
+                <h2 class="text-2xl font-black text-emerald-800 tracking-tight">Detail & Verifikasi</h2>
+                <p class="text-[13px] text-slate-500 font-bold mt-1 tracking-wide">Periksa dokumen kelengkapan calon siswa</p>
             </div>
+            <a href="<?= base_url('admin/pendaftar') ?>" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors shadow-sm"><i class="fas fa-arrow-left text-sm text-slate-500"></i></a>
         </header>
 
         <div class="p-8 max-w-6xl mx-auto w-full pb-20">
@@ -225,8 +225,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc}
                                 </div>
 
                                 <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Catatan Umum untuk Siswa</label>
-                                    <textarea name="catatan" rows="4" class="block w-full px-4 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50/50 hover:bg-white transition-colors focus:border-emerald-500 focus:outline-none" placeholder="Contoh: Berkas KK buram..."><?= htmlspecialchars($data['pendaftaran']['catatan'] ?? '') ?></textarea>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2"><i class="fas fa-edit mr-1"></i> Catatan Panitia</label>
+                                    <textarea name="catatan" rows="4" class="block w-full px-4 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50/50 hover:bg-white transition-colors focus:border-emerald-500 focus:outline-none" placeholder="Berkas KK buram..."><?= htmlspecialchars($data['pendaftaran']['catatan'] ?? '') ?></textarea>
                                 </div>
                                 <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-sm font-black rounded-xl uppercase tracking-widest hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg shadow-emerald-200 mt-2">
                                     <i class="fas fa-save mr-2"></i> Simpan Keputusan

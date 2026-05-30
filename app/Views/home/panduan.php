@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -150,7 +150,7 @@
                         <h2 class="text-lg font-black text-emerald-800 uppercase tracking-wide leading-tight mt-1">MADRASAH IBTIDAIYAH SWASTA NURUL IKHLAS</h2>
                         <p class="text-[9px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">NSM: 111236030095 | NPSN: 60723456</p>
                         <p class="text-[9px] text-slate-600 font-medium leading-tight mt-1">
-                            Jl. Raya Pagedangan - Legok RT. 001/003 Desa Jatake, Kec. Pagedangan, Kab. Tangerang, Banten
+                            <?= htmlspecialchars($data['kontak_alamat'] ?? 'Jl. Raya Pagedangan - Legok RT. 001/003 Desa Jatake, Kec. Pagedangan, Kab. Tangerang, Banten') ?>
                         </p>
                     </div>
                     <!-- Spacer for layout alignment -->
@@ -303,7 +303,8 @@
                                     <th class="border-r border-slate-200 px-3 py-2 text-left font-bold text-slate-800">Gelombang / Kategori Kegiatan</th>
                                     <th class="border-r border-slate-200 px-3 py-2 text-left font-bold text-slate-800">Batas Masa Pendaftaran</th>
                                     <th class="border-r border-slate-200 px-3 py-2 text-left font-bold text-slate-800">Masa Wawancara & Sosialisasi</th>
-                                    <th class="px-3 py-2 text-left font-bold text-slate-800">Pengumuman Kelulusan</th>
+                                    <th class="border-r border-slate-200 px-3 py-2 text-left font-bold text-slate-800">Pengumuman Kelulusan</th>
+                                    <th class="px-3 py-2 text-left font-bold text-slate-800">Daftar Ulang</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-200 font-medium">
@@ -317,7 +318,8 @@
                                     </td>
                                     <td class="border-r border-slate-200 px-3 py-2"><?= htmlspecialchars($g['daftar']) ?></td>
                                     <td class="border-r border-slate-200 px-3 py-2"><?= htmlspecialchars($g['sosial']) ?></td>
-                                    <td class="px-3 py-2"><?= htmlspecialchars($g['hasil']) ?></td>
+                                    <td class="border-r border-slate-200 px-3 py-2"><?= htmlspecialchars($g['hasil']) ?></td>
+                                    <td class="px-3 py-2"><?= htmlspecialchars($g['daftar_ulang'] ?? '-') ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -340,9 +342,9 @@
                             Apabila terdapat kesulitan dalam pendaftaran online, berkas dokumen bermasalah, maupun pertanyaan seputar administrasi PPDB, silakan hubungi kontak panitia di bawah ini:
                         </p>
                         <ul class="list-disc pl-5 mt-1 space-y-1">
-                            <li><strong class="text-slate-800">Sekretariat Panitia:</strong> Gedung Admin PPDB MIS Nurul Ikhlas (Setiap hari kerja, Pukul 08.00 s/d 14.00 WIB)</li>
-                            <li><strong class="text-slate-800">Telepon / WhatsApp:</strong> 0812-3456-7890 (Layanan Helpdesk PPDB)</li>
-                            <li><strong class="text-slate-800">Email Hubungan Masyarakat:</strong> ppdb@misnurulikhlas.sch.id / info@misnurulikhlas.sch.id</li>
+                            <li><strong class="text-slate-800">Sekretariat Panitia:</strong> <?= htmlspecialchars($data['kontak_alamat'] ?? '') ?></li>
+                            <li><strong class="text-slate-800">Telepon / WhatsApp:</strong> <?= htmlspecialchars($data['kontak_telepon'] ?? '') ?></li>
+                            <li><strong class="text-slate-800">Email Hubungan Masyarakat:</strong> <?= htmlspecialchars($data['kontak_email'] ?? '') ?></li>
                         </ul>
                     </div>
                 </section>

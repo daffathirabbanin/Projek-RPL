@@ -23,8 +23,13 @@ class HomeController extends Controller {
                 'daftar' => $settings->getSetting("jadwal_g{$g}_daftar") ?? '-',
                 'sosial' => $settings->getSetting("jadwal_g{$g}_sosial") ?? '-',
                 'hasil'  => $settings->getSetting("jadwal_g{$g}_hasil")  ?? '-',
+                'daftar_ulang' => $settings->getSetting("jadwal_g{$g}_daftar_ulang") ?? '-',
             ];
         }
+        
+        $data['kontak_alamat']  = $settings->getSetting('kontak_alamat')  ?? 'Jl. Raya Pagedangan - Legok RT 001/003 Desa Jatake, Kec. Pagedangan';
+        $data['kontak_telepon'] = $settings->getSetting('kontak_telepon') ?? '(021) 1234-5678, 0812-3456-7890';
+        $data['kontak_email']   = $settings->getSetting('kontak_email')   ?? 'info@misnurulikhlas.sch.id, ppdb@misnurulikhlas.sch.id';
         
         $this->view('home/index', $data);
     }
@@ -41,9 +46,14 @@ class HomeController extends Controller {
                 'daftar' => $settings->getSetting("jadwal_g{$g}_daftar") ?? '-',
                 'sosial' => $settings->getSetting("jadwal_g{$g}_sosial") ?? '-',
                 'hasil'  => $settings->getSetting("jadwal_g{$g}_hasil")  ?? '-',
+                'daftar_ulang' => $settings->getSetting("jadwal_g{$g}_daftar_ulang") ?? '-',
             ];
         }
         
+        $data['kontak_alamat']  = $settings->getSetting('kontak_alamat')  ?? 'Jl. Raya Pagedangan - Legok RT. 001/003 Desa Jatake, Kec. Pagedangan, Kab. Tangerang, Banten';
+        $data['kontak_telepon'] = $settings->getSetting('kontak_telepon') ?? '(021) 1234-5678, 0812-3456-7890';
+        $data['kontak_email']   = $settings->getSetting('kontak_email')   ?? 'info@misnurulikhlas.sch.id, ppdb@misnurulikhlas.sch.id';
+
         $this->view('home/panduan', $data);
     }
 }

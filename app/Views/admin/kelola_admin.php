@@ -8,7 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-    body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:#FAFAFA}
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     .animate-fadeUp{animation:fadeUp .5s ease-out forwards}
     </style>
@@ -17,9 +17,11 @@
     <?php require_once '../app/Views/admin/_sidebar.php'; adminSidebar('kelola_admin'); ?>
 
     <main class="flex-1 flex flex-col h-full overflow-y-auto">
-        <header class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-200/60 sticky top-0 z-10">
-            <h2 class="text-xl font-black text-slate-800 tracking-tight">KELOLA ADMIN</h2>
-            <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-0.5">Manajemen akun panitia PPDB</p>
+        <header class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-200/60 sticky top-0 z-10 flex justify-between items-center">
+            <div>
+                <h2 class="text-2xl font-black text-emerald-800 tracking-tight">Kelola Admin</h2>
+                <p class="text-[13px] text-slate-500 font-bold mt-1 tracking-wide">Kelola hak akses administrator sistem</p>
+            </div>
         </header>
 
         <div class="p-8 max-w-6xl mx-auto w-full pb-20 space-y-8">

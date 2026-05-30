@@ -6,8 +6,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f1f5f9}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+body{font-family:'Poppins',sans-serif;background:#f8fafc}
 .card-hover{transition:all .3s cubic-bezier(.4,0,.2,1)}
 .card-hover:hover{transform:translateY(-4px);box-shadow:0 20px 25px -5px rgba(0,0,0,.06)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -26,10 +26,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f1f5f9}
 
 <main class="flex-1 flex flex-col h-full overflow-y-auto">
 <!-- Header -->
-<header class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-200/60 flex justify-between items-center sticky top-0 z-10">
+<header class="bg-white px-8 py-5 border-b border-slate-200/80 sticky top-0 z-30 flex justify-between items-center shadow-sm">
   <div>
-    <h2 class="text-xl font-black text-slate-800 tracking-tight">DASHBOARD</h2>
-    <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-0.5">Panel Calon Peserta Didik Baru</p>
+    <h2 class="text-2xl font-bold text-[#1a5632] tracking-tight">Dashboard</h2>
+    <p class="text-[13px] text-slate-500 font-medium mt-1">Ringkasan Data Pendaftaran</p>
   </div>
   <div class="flex items-center space-x-6">
     <!-- Bell Notification Button -->
@@ -42,15 +42,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f1f5f9}
         $notifs[] = ['type'=>'success','icon'=>'fa-check-circle','color'=>'text-emerald-500','msg'=>'Selamat! Anda DITERIMA.','link'=>'student/pengumuman'];
     } elseif ($reg_status === 'ditolak') {
         $notifs[] = ['type'=>'error','icon'=>'fa-times-circle','color'=>'text-red-500','msg'=>'Maaf, pendaftaran Anda tidak diterima.','link'=>'student/pengumuman'];
-    } elseif ($reg_status === 'nunggu_pengumuman') {
-        $notifs[] = ['type'=>'info','icon'=>'fa-check-double','color'=>'text-blue-500','msg'=>'Dokumen diterima! Menunggu jadwal rilis pengumuman resmi.','link'=>'student/pengumuman'];
     } elseif ($reg_status === 'dokumen_diterima') {
-        $notifs[] = ['type'=>'info','icon'=>'fa-check-double','color'=>'text-blue-500','msg'=>'Formulir & dokumen Anda sudah diterima panitia. Menunggu pengumuman kelulusan.','link'=>'student/pengumuman'];
+        $notifs[] = ['type'=>'success','icon'=>'fa-clipboard-check','color'=>'text-blue-500','msg'=>'PANGGILAN TES BACA TULIS: Berkas diverifikasi. Cek jadwal dan unduh Formulir Peserta.','link'=>'student/pengumuman'];
+    } elseif ($reg_status === 'nunggu_pengumuman') {
+        $notifs[] = ['type'=>'info','icon'=>'fa-check-double','color'=>'text-blue-500','msg'=>'Formulir & dokumen divalidasi. Menunggu pengumuman kelulusan resmi.','link'=>'student/pengumuman'];
+    } elseif ($reg_status === 'diproses') {
+        $notifs[] = ['type'=>'success','icon'=>'fa-paper-plane','color'=>'text-emerald-500','msg'=>'Formulir dan dokumen pendaftaran berhasil dikirim. Menunggu verifikasi admin.','link'=>'#'];
     } elseif ($reg_status === 'perlu_revisi') {
         $notifs[] = ['type'=>'error','icon'=>'fa-exclamation-triangle','color'=>'text-red-500','msg'=>'Data/berkas Anda perlu direvisi! Segera perbaiki.','link'=>'student'];
     }
     if (!empty($reg_catatan) && $reg_status === 'nunggu_verifikasi') {
-        $notifs[] = ['type'=>'warning','icon'=>'fa-exclamation-circle','color'=>'text-amber-500','msg'=>'Admin memberi catatan: Periksa dokumen Anda!','link'=>'student/upload'];
+        $notifs[] = ['type'=>'warning','icon'=>'fa-exclamation-circle','color'=>'text-amber-500','msg'=>'Admin memberi catatan: Periksa dokumen Anda!','link'=>'student/form'];
     }
     $notif_count = count($notifs);
     ?>
@@ -107,11 +109,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f1f5f9}
       </div>
     </div>
 
-    <!-- Date Info -->
-    <div class="text-right border-l border-slate-200/80 pl-6 hidden sm:block">
-      <p class="text-xs font-bold text-slate-500"><?= date('l, d F Y') ?></p>
-      <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mt-0.5">TA 2026/2027</p>
-    </div>
+    <!-- Date Info Removed -->
   </div>
 </header>
 
@@ -129,95 +127,142 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f1f5f9}
 </div>
 <?php endif; ?>
 
-<?php if(isset($_GET['success']) && $_GET['success'] === 'resubmitted'): ?>
-<div class="mb-6 bg-white border border-emerald-200 shadow-lg rounded-2xl p-5 flex items-center space-x-4 animate-fadeUp">
+<?php if(isset($_GET['success']) && in_array($_GET['success'], ['resubmitted', 'form_submitted'])): ?>
+<div id="main-success-notif" class="mb-6 bg-white border border-emerald-200 shadow-lg rounded-2xl p-5 flex items-start sm:items-center space-x-4 animate-fadeUp relative transition-all duration-300">
   <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
-    <i class="fas fa-paper-plane"></i>
+    <i class="fas fa-check-circle"></i>
   </div>
-  <div class="flex-1">
+  <div class="flex-1 pr-8">
     <h4 class="font-black text-emerald-600 text-sm uppercase tracking-wide">Berhasil Dikirim!</h4>
-    <p class="text-slate-500 text-xs mt-0.5 font-medium">Data perbaikan pendaftaran Anda telah berhasil dikirim ulang ke panitia PPDB.</p>
+    <p class="text-slate-500 text-xs mt-0.5 font-medium">
+      <?php if($_GET['success'] === 'resubmitted'): ?>
+        Data perbaikan pendaftaran Anda telah berhasil dikirim ulang ke panitia PPDB.
+      <?php else: ?>
+        Formulir dan dokumen pendaftaran berhasil dikirim. Saat ini data Anda sedang menunggu verifikasi admin.
+      <?php endif; ?>
+    </p>
   </div>
+  <button onclick="closeSuccessNotif()" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
+    <i class="fas fa-times"></i>
+  </button>
 </div>
+<script>
+function closeSuccessNotif() {
+    const el = document.getElementById('main-success-notif');
+    if(el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-10px)';
+        setTimeout(() => el.remove(), 300);
+    }
+    // Hapus parameter ?success dari URL agar notif tidak muncul lagi saat di-refresh
+    if(window.history.replaceState) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('success');
+        window.history.replaceState({path:url.href}, '', url.href);
+    }
+}
+// Hilang otomatis setelah 7 detik
+setTimeout(closeSuccessNotif, 7000);
+</script>
 <?php endif; ?>
 
 <?php $status = $data['pendaftaran']['status'] ?? 'belum_mendaftar'; ?>
 
 <!-- Welcome Banner -->
-<div class="bg-gradient-to-br from-emerald-600 to-teal-800 rounded-3xl border border-emerald-500/30 p-8 lg:p-12 shadow-xl shadow-emerald-900/10 mb-8 animate-fadeUp delay-1 text-center sm:text-left relative overflow-hidden" style="opacity:0">
-  <div class="absolute inset-0 opacity-30 pointer-events-none">
-    <div class="absolute top-0 right-0 w-80 h-80 bg-emerald-400 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
-    <div class="absolute bottom-0 left-10 w-64 h-64 bg-teal-400 rounded-full blur-[60px] translate-y-1/2 -translate-x-1/4"></div>
+<div class="bg-[#E8F4EC] rounded-3xl p-8 lg:p-10 shadow-[0_8px_30px_rgba(0,0,0,0.04)] mb-8 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+  
+  <!-- Decorative Elements Background -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <!-- Soft Glowing Orbs -->
+      <div class="absolute -top-20 -right-10 w-72 h-72 bg-white rounded-full blur-3xl opacity-60"></div>
+      <div class="absolute -bottom-24 left-1/4 w-80 h-80 bg-emerald-200/30 rounded-full blur-3xl opacity-70"></div>
+      
+      <!-- Faint Educational Icons (Watermark) -->
+      <i class="fas fa-book-open absolute top-6 left-[45%] text-6xl text-emerald-600/[0.03] -rotate-12"></i>
+      <i class="fas fa-graduation-cap absolute bottom-4 left-[30%] text-7xl text-emerald-600/[0.03] rotate-12"></i>
+      <i class="fas fa-star absolute top-10 right-[35%] text-3xl text-yellow-500/10 animate-pulse"></i>
+      <i class="fas fa-pencil-alt absolute bottom-10 right-[42%] text-5xl text-emerald-600/[0.03] -rotate-12"></i>
+      <i class="fas fa-atom absolute top-[30%] left-[55%] text-6xl text-emerald-600/[0.03] rotate-45"></i>
   </div>
-  <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
-    <div class="flex-1 max-w-2xl">
-      <h2 class="text-emerald-100 font-bold text-xl lg:text-2xl mb-3 tracking-tight">Hi, Calon Siswa!</h2>
-      <h3 class="text-white font-black text-2xl lg:text-3xl mb-5 tracking-tight leading-tight">
-        Selamat datang di PPDB Online<br>MI Nurul Ikhlas Al-Ayubi
-      </h3>
-      <p class="text-emerald-50/90 text-sm font-medium mb-8 leading-relaxed">
-        Tahun Ajaran 2026/2027 telah dibuka. Segera daftarkan putra/putri Anda untuk mendapatkan pendidikan berkualitas berbasis nilai-nilai Islam.
-      </p>
-      <div class="flex flex-col sm:flex-row items-center gap-4">
-        <a href="<?= base_url('student/form') ?>" class="inline-flex items-center justify-center px-7 py-3.5 bg-white text-emerald-800 hover:bg-emerald-50 hover:text-emerald-900 rounded-xl text-sm font-bold shadow-lg transition-all transform hover:-translate-y-0.5 min-w-[180px]">
-          <i class="fas fa-user-plus mr-3 text-lg text-emerald-600"></i> Daftar Sekarang
-        </a>
-        <a href="<?= base_url('home/panduan') ?>" target="_blank" class="inline-flex items-center justify-center px-7 py-3.5 bg-emerald-900/30 hover:bg-emerald-900/50 text-white border border-emerald-400/40 rounded-xl text-sm font-bold shadow-md transition-all transform hover:-translate-y-0.5 backdrop-blur-sm min-w-[180px]">
-          <i class="fas fa-book-open mr-3 text-lg text-emerald-300"></i> Panduan PPDB
-        </a>
-      </div>
-    </div>
-    
-    <!-- Right Illustration -->
-    <div class="hidden lg:flex w-64 h-64 relative items-center justify-center">
-       <div class="absolute inset-0 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-       <i class="fas fa-graduation-cap text-[130px] text-white drop-shadow-2xl z-10 transform -rotate-12 hover:rotate-0 transition-transform duration-500"></i>
-       <i class="fas fa-book-open text-6xl text-emerald-300 absolute bottom-4 right-0 drop-shadow-lg transform rotate-12 z-20"></i>
-       <i class="fas fa-star text-4xl text-yellow-300 absolute top-0 left-0 drop-shadow-lg animate-bounce z-20"></i>
-       <i class="fas fa-pencil-alt text-5xl text-teal-200 absolute top-10 right-0 drop-shadow-lg transform rotate-45 z-0 opacity-60"></i>
-    </div>
+  
+  <div class="relative z-10 flex-1">
+    <p class="text-emerald-800 font-bold text-lg mb-1">Assalamu'alaikum,</p>
+    <?php
+      $hour = (int)date('H');
+      if ($hour >= 4 && $hour < 11) {
+          $greeting = "Selamat Pagi";
+      } elseif ($hour >= 11 && $hour < 15) {
+          $greeting = "Selamat Siang";
+      } elseif ($hour >= 15 && $hour < 18) {
+          $greeting = "Selamat Sore";
+      } else {
+          $greeting = "Selamat Malam";
+      }
+    ?>
+    <h2 class="text-emerald-950 font-black text-3xl lg:text-4xl mb-3">
+      <?= $greeting ?>, <?= htmlspecialchars(explode(' ', trim($_SESSION['user_name'] ?? 'Calon Siswa'))[0]) ?>! <span class="inline-block animate-bounce">👋</span>
+    </h2>
+    <p class="text-emerald-800/80 font-semibold text-sm max-w-md leading-relaxed">
+      Semangat melengkapi berkas hari ini, raih ilmu dan jadi anak shalih/shalihah yang membanggakan. 💚
+    </p>
   </div>
+  
+
+  
 </div>
 
-<!-- 3 Info Cards -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fadeUp delay-2" style="opacity:0">
-    <!-- Card 1: Jadwal -->
-    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex items-start gap-4 card-hover">
-        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl flex-shrink-0">
-            <i class="fas fa-calendar-alt"></i>
+<!-- 4 Info Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-10 animate-fadeUp delay-2" style="opacity:0">
+    <!-- Card 1: Status -->
+    <div class="bg-white rounded-[24px] border border-slate-100 p-5 shadow-sm flex items-center gap-5 card-hover">
+        <div class="w-16 h-16 rounded-full bg-[#419864] text-white flex items-center justify-center text-2xl flex-shrink-0 shadow-md">
+            <i class="fas fa-user-check"></i>
         </div>
-        <div>
-            <h4 class="font-bold text-slate-800 text-sm mb-1">Jadwal Pendaftaran</h4>
-            <p class="text-xs text-slate-500 font-medium mb-3"><?= htmlspecialchars($data['jadwal_daftar'] ?? '01 Mar - 30 Jun 2026') ?></p>
-            <span class="inline-block px-3 py-1 bg-blue-50 border border-blue-100 text-blue-600 text-[10px] font-bold uppercase tracking-wider rounded-lg">Sedang Berlangsung</span>
+        <div class="flex-1">
+            <h4 class="font-bold text-slate-500 text-[11px] uppercase tracking-wider mb-0.5">Status Pendaftaran</h4>
+            <p class="text-slate-800 font-black text-lg leading-tight mb-0"><?= $status == 'belum_mendaftar' ? 'Belum Daftar' : ucwords(str_replace('_', ' ', $status)) ?></p>
         </div>
     </div>
     
-    <!-- Card 2: Formulir Peserta -->
-    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex items-start gap-4 card-hover">
-        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl flex-shrink-0">
-            <i class="fas fa-file-contract"></i>
+    <!-- Card 2: Panduan -->
+    <div class="bg-white rounded-[24px] border border-slate-100 p-5 shadow-sm flex items-center gap-5 card-hover">
+        <div class="w-16 h-16 rounded-full bg-[#3E8ED0] text-white flex items-center justify-center text-2xl flex-shrink-0 shadow-md">
+            <i class="fas fa-book-open"></i>
         </div>
-        <div>
-            <h4 class="font-bold text-slate-800 text-sm mb-1">Formulir Peserta</h4>
-            <p class="text-xs text-slate-500 font-medium mb-3">Unduh bukti pendaftaran Anda</p>
-            <?php if(in_array($status, ['dokumen_diterima', 'nunggu_pengumuman', 'diterima', 'ditolak'])): ?>
-            <a href="<?= base_url('student/cetak') ?>" target="_blank" class="inline-block px-3 py-1 bg-purple-50 border border-purple-100 text-purple-600 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-colors hover:bg-purple-100"><i class="fas fa-print mr-1"></i> Cetak Formulir</a>
+        <div class="flex-1">
+            <h4 class="font-bold text-slate-500 text-[11px] uppercase tracking-wider mb-0.5">Panduan PPDB</h4>
+            <p class="text-slate-800 font-black text-lg leading-tight mb-1">Cara Daftar</p>
+            <?php if(!empty($data['panduan_ppdb'])): ?>
+                <a href="<?= base_url($data['panduan_ppdb']) ?>" target="_blank" class="text-[10px] font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center mt-1 uppercase tracking-wider">Baca Panduan <i class="fas fa-chevron-right ml-1"></i></a>
             <?php else: ?>
-            <span class="inline-block px-3 py-1 bg-slate-50 border border-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-lg"><i class="fas fa-lock mr-1"></i> Belum Tersedia</span>
+                <span class="text-[10px] font-bold text-slate-400 flex items-center mt-1 uppercase tracking-wider">Belum Tersedia</span>
             <?php endif; ?>
         </div>
     </div>
-    
-    <!-- Card 3: Status -->
-    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex items-start gap-4 card-hover">
-        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-xl flex-shrink-0">
-            <i class="fas fa-info-circle"></i>
+
+    <!-- Card 3: Formulir -->
+    <div class="bg-white rounded-[24px] border border-slate-100 p-5 shadow-sm flex items-center gap-5 card-hover">
+        <div class="w-16 h-16 rounded-full bg-[#FFB82E] text-white flex items-center justify-center text-2xl flex-shrink-0 shadow-md">
+            <i class="fas fa-clipboard-list"></i>
         </div>
-        <div>
-            <h4 class="font-bold text-slate-800 text-sm mb-1">Status Pendaftaran</h4>
-            <p class="text-xs text-slate-500 font-medium mb-3">Cek status pendaftaran Anda</p>
-            <a href="#status-panel" class="inline-block px-2 py-1 bg-transparent text-emerald-600 hover:text-emerald-700 text-[11px] font-bold uppercase tracking-wider transition-colors"><i class="fas fa-arrow-right mr-1"></i> Cek Status</a>
+        <div class="flex-1">
+            <h4 class="font-bold text-slate-500 text-[11px] uppercase tracking-wider mb-0.5">Formulir Peserta</h4>
+            <p class="text-slate-800 font-black text-lg leading-tight mb-1"><?= in_array($status, ['belum_mendaftar', 'perlu_revisi']) ? ($data['progress_percent'] == 100 ? 'Siap Kirim' : 'Belum Lengkap') : 'Selesai' ?></p>
+            <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                <div class="bg-[#FFB82E] h-1.5 rounded-full transition-all duration-700 ease-out" style="width: <?= in_array($status, ['belum_mendaftar', 'perlu_revisi']) ? $data['progress_percent'] . '%' : '100%' ?>"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4: Poin/Pengumuman -->
+    <div class="bg-white rounded-[24px] border border-slate-100 p-5 shadow-sm flex items-center gap-5 card-hover">
+        <div class="w-16 h-16 rounded-full bg-[#9B51E0] text-white flex items-center justify-center text-2xl flex-shrink-0 shadow-md">
+            <i class="fas fa-bullhorn"></i>
+        </div>
+        <div class="flex-1">
+            <h4 class="font-bold text-slate-500 text-[11px] uppercase tracking-wider mb-0.5">Pengumuman</h4>
+            <p class="text-slate-800 font-black text-lg leading-tight mb-1">Hasil Seleksi</p>
+            <a href="<?= base_url('student/pengumuman') ?>" class="text-[10px] font-bold text-purple-500 flex items-center mt-1 uppercase tracking-wider">Cek hasil sekarang <i class="fas fa-chevron-right ml-1"></i></a>
         </div>
     </div>
 </div>
@@ -242,88 +287,49 @@ $c = $configs[$status] ?? $configs['belum_mendaftar'];
 ?>
 
 <?php if($status === 'dokumen_diterima'): ?>
-<!-- ═══════════ TES BACA TULIS NOTIFICATION ═══════════ -->
-<div class="mb-8 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-6 lg:p-8 shadow-xl shadow-blue-900/10 text-white relative overflow-hidden animate-fadeUp delay-1">
-  <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
-  <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
-    <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl shrink-0 backdrop-blur-sm border border-white/30">
-      <i class="fas fa-clipboard-check"></i>
-    </div>
-    <div class="flex-1 w-full">
-      <h3 class="text-xl font-black mb-2 tracking-wide">PANGGILAN TES BACA TULIS</h3>
-      <p class="text-blue-50 text-sm leading-relaxed mb-4">
-        Selamat! Berkas pendaftaran Anda telah diverifikasi oleh admin. Langkah selanjutnya adalah mengikuti <strong>Tes Baca Tulis & Wawancara</strong> secara langsung (offline) di sekolah pada jadwal berikut:
-      </p>
-      <div class="inline-block px-5 py-2.5 bg-white/20 rounded-xl font-bold border border-white/30 shadow-inner mb-5">
-        <i class="fas fa-calendar-alt mr-2 text-blue-200"></i> <?= htmlspecialchars($data['jadwal_tes'] ?? 'Menunggu Info Admin') ?>
-      </div>
-      <div class="bg-blue-900/40 border border-blue-400/30 rounded-xl p-4 text-xs lg:text-sm font-medium text-blue-100 flex items-start gap-3">
-        <i class="fas fa-exclamation-circle text-lg text-amber-300 shrink-0 mt-0.5"></i>
-        <p class="leading-relaxed"><strong>Penting:</strong> Anda <u>WAJIB</u> mengunduh dan mencetak <a href="<?= base_url('student/cetak') ?>" target="_blank" class="text-white font-bold underline decoration-blue-400 hover:text-blue-200">Formulir Peserta</a>, lalu membawanya saat datang ke sekolah untuk tes. Hasil seleksi (Lulus/Tidak Lulus) akan diumumkan setelah proses tes ini selesai.</p>
+<!-- ═══════════ ACCEPTED / TEST SCHEDULE CARD ═══════════ -->
+<div class="mb-8 animate-fadeUp delay-1" style="opacity:0">
+  <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-[3px] shadow-lg overflow-hidden">
+    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[20px] p-6 lg:p-8 relative overflow-hidden h-full flex flex-col justify-center">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+      <i class="fas fa-calendar-check absolute -bottom-6 -right-6 text-8xl text-white/10 -rotate-12"></i>
+      
+      <div class="relative z-10 flex items-start gap-4">
+        <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white text-xl shrink-0 border border-white/30">
+          <i class="<?= ($data['pendaftaran']['absensi_tes'] ?? '') === 'hadir' ? 'fas fa-check' : 'fas fa-info' ?>"></i>
+        </div>
+        <div>
+          <h3 class="text-white font-black text-xl lg:text-2xl mb-2 drop-shadow-md">
+            <?= ($data['pendaftaran']['absensi_tes'] ?? '') === 'hadir' ? 'Tes Telah Selesai!' : 'Panggilan Tes Baca Tulis' ?>
+          </h3>
+          
+          <?php if(($data['pendaftaran']['absensi_tes'] ?? '') === 'hadir'): ?>
+              <p class="text-blue-50 text-sm lg:text-base leading-relaxed mb-4">
+                Terima kasih telah hadir dan mengikuti <strong>Tes Baca Tulis & Wawancara</strong>. Tahapan tes Anda telah selesai.
+              </p>
+              <div class="bg-emerald-500/40 border border-emerald-400/30 rounded-xl p-4 text-xs lg:text-sm font-medium text-emerald-50 flex items-start gap-3">
+                <i class="fas fa-clock text-lg text-emerald-300 shrink-0 mt-0.5"></i>
+                <p class="leading-relaxed">Silakan menunggu pengumuman hasil seleksi (Lulus/Tidak Lulus) yang akan segera dirilis oleh panitia melalui dashboard ini.</p>
+              </div>
+          <?php else: ?>
+              <p class="text-blue-50 text-sm lg:text-base leading-relaxed mb-4">
+                Selamat! Berkas pendaftaran Anda telah diverifikasi oleh admin. Langkah selanjutnya adalah mengikuti <strong>Tes Baca Tulis & Wawancara</strong> secara langsung (offline) di sekolah pada jadwal berikut:
+              </p>
+              <div class="inline-block px-5 py-2.5 bg-white/20 rounded-xl font-bold border border-white/30 shadow-inner mb-5">
+                <i class="fas fa-calendar-alt mr-2 text-blue-200"></i> <?= htmlspecialchars($data['jadwal_tes'] ?? 'Menunggu Info Admin') ?>
+              </div>
+              <div class="bg-blue-900/40 border border-blue-400/30 rounded-xl p-4 text-xs lg:text-sm font-medium text-blue-100 flex items-start gap-3">
+                <i class="fas fa-exclamation-circle text-lg text-amber-300 shrink-0 mt-0.5"></i>
+                <p class="leading-relaxed"><strong>Penting:</strong> Anda <u>WAJIB</u> mengunduh dan mencetak <a href="<?= base_url('student/cetak') ?>" target="_blank" class="text-white font-bold underline decoration-blue-400 hover:text-blue-200">Formulir Peserta</a>, lalu membawanya saat datang ke sekolah untuk tes. Hasil seleksi (Lulus/Tidak Lulus) akan diumumkan setelah proses tes ini selesai.</p>
+              </div>
+          <?php endif; ?>
+        </div>
       </div>
     </div>
   </div>
 </div>
 <?php endif; ?>
 
-<?php if($status === 'nunggu_pengumuman'): ?>
-<!-- ═══════════ COUNTDOWN CARD ═══════════ -->
-<?php
-  $release_time_raw = (new Settings_model())->getSetting('release_announcement_datetime');
-  $release_ts = strtotime($release_time_raw);
-?>
-<div class="mb-8 animate-fadeUp delay-1" style="opacity:0">
-  <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
-    <div class="flex-1 text-center md:text-left">
-      <div class="inline-flex items-center px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full mb-3 text-[10px] font-bold uppercase tracking-wider">
-        <i class="fas fa-clock mr-1.5 animate-pulse"></i> Menunggu Pengumuman
-      </div>
-      <h3 class="text-lg font-black text-emerald-900 mb-1">Pengumuman Segera Dirilis</h3>
-      <p class="text-emerald-700 text-xs font-medium">Hasil seleksi akan diumumkan pada: <span class="font-bold"><?= date('d F Y, H:i', $release_ts) ?> WIB</span></p>
-    </div>
-    
-    <!-- Countdown Timer -->
-    <div class="flex gap-3" id="countdown-grid">
-      <div class="bg-white border border-emerald-100 shadow-sm rounded-xl p-3 w-16 text-center">
-        <div class="text-xl font-black text-emerald-600" id="cd-days">--</div>
-        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Hari</div>
-      </div>
-      <div class="bg-white border border-emerald-100 shadow-sm rounded-xl p-3 w-16 text-center">
-        <div class="text-xl font-black text-emerald-600" id="cd-hours">--</div>
-        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Jam</div>
-      </div>
-      <div class="bg-white border border-emerald-100 shadow-sm rounded-xl p-3 w-16 text-center">
-        <div class="text-xl font-black text-emerald-600" id="cd-mins">--</div>
-        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Mnt</div>
-      </div>
-      <div class="bg-white border border-emerald-100 shadow-sm rounded-xl p-3 w-16 text-center">
-        <div class="text-xl font-black text-emerald-600" id="cd-secs">--</div>
-        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Dtk</div>
-      </div>
-    </div>
-  </div>
-</div>
-<script>
-(function(){
-  const target = <?= $release_ts ?> * 1000;
-  function tick(){
-    const now = Date.now();
-    let diff = Math.max(0, Math.floor((target - now)/1000));
-    if(diff <= 0){ location.reload(); return; }
-    const d = Math.floor(diff/86400); diff %= 86400;
-    const h = Math.floor(diff/3600);  diff %= 3600;
-    const m = Math.floor(diff/60);
-    const s = diff % 60;
-    document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
-    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-    document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
-    document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
-  }
-  tick();
-  setInterval(tick, 1000);
-})();
-</script>
-<?php endif; ?>
 
 <?php if($status === 'perlu_revisi' && !empty($revisi_items)): ?>
 <!-- ═══════════ REVISION WARNING CARD ═══════════ -->
@@ -331,10 +337,10 @@ $c = $configs[$status] ?? $configs['belum_mendaftar'];
   $revisi_labels = [
     'pribadi'  => ['label'=>'Formulir Biodata Pribadi', 'icon'=>'fa-user', 'link'=>'student/form'],
     'ortu'     => ['label'=>'Data Orang Tua / Wali', 'icon'=>'fa-users', 'link'=>'student/form'],
-    'ijazah'   => ['label'=>'Berkas Ijazah / SKL', 'icon'=>'fa-file-alt', 'link'=>'student/upload'],
-    'kk'       => ['label'=>'Berkas Kartu Keluarga', 'icon'=>'fa-id-card', 'link'=>'student/upload'],
-    'akta'     => ['label'=>'Berkas Akta Kelahiran', 'icon'=>'fa-file-contract', 'link'=>'student/upload'],
-    'foto_3x4' => ['label'=>'Pas Foto 3x4', 'icon'=>'fa-camera', 'link'=>'student/upload']
+    'ijazah'   => ['label'=>'Berkas Ijazah / SKL', 'icon'=>'fa-file-alt', 'link'=>'student/form'],
+    'kk'       => ['label'=>'Berkas Kartu Keluarga', 'icon'=>'fa-id-card', 'link'=>'student/form'],
+    'akta'     => ['label'=>'Berkas Akta Kelahiran', 'icon'=>'fa-file-contract', 'link'=>'student/form'],
+    'foto_3x4' => ['label'=>'Pas Foto 3x4', 'icon'=>'fa-camera', 'link'=>'student/form']
   ];
 ?>
 <div class="mb-8 animate-fadeUp delay-1" style="opacity:0">
@@ -386,54 +392,203 @@ $c = $configs[$status] ?? $configs['belum_mendaftar'];
 </div>
 <?php endif; ?>
 
-<div class="grid grid-cols-1 <?= $catatan && !in_array($status, ['perlu_revisi']) ? 'lg:grid-cols-5' : '' ?> gap-6 mb-8 animate-fadeUp delay-1" style="opacity:0">
-  <!-- Status Card -->
-  <div id="status-panel" class="<?= $catatan && !in_array($status, ['perlu_revisi']) ? 'lg:col-span-3' : '' ?> bg-white rounded-2xl border <?= $c['border'] ?> shadow-sm card-hover overflow-hidden">
-    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-      <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.15em]">Status Pendaftaran Anda</h4>
-    </div>
-    <div class="p-6">
-      <div class="flex items-center space-x-5 p-5 rounded-xl <?= $c['bg'] ?> border <?= $c['border'] ?>">
-        <div class="w-14 h-14 <?= $c['icon_bg'] ?> rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
-          <i class="fas <?= $c['icon'] ?>"></i>
-        </div>
-        <div>
-          <p class="font-black text-lg <?= $c['text_color'] ?> uppercase tracking-tight"><?= $c['text'] ?></p>
-          <?php if($status == 'belum_mendaftar'): ?>
-          <p class="text-xs text-slate-500 mt-1 font-medium">Silakan lengkapi formulir, lalu klik "Kirim Pendaftaran" di tahap akhir.</p>
-          <?php elseif($status == 'nunggu_verifikasi'): ?>
-          <p class="text-xs text-amber-600 mt-1 font-medium">Data Anda sedang diperiksa oleh panitia PPDB.</p>
-          <?php elseif($status == 'diterima'): ?>
-          <p class="text-xs text-emerald-700 mt-1 font-medium mb-3">Selamat! Hasil seleksi menyatakan Anda DITERIMA.</p>
-          <a href="<?= base_url('student/pengumuman') ?>" class="inline-block px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[11px] font-bold uppercase tracking-wider rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all shadow-md"><i class="fas fa-envelope-open-text mr-1.5 text-sm"></i> Cek Kelulusan Sekarang</a>
-          <?php elseif($status == 'ditolak'): ?>
-          <p class="text-xs text-rose-700 mt-1 font-medium mb-3">Hasil akhir seleksi Anda sudah dirilis.</p>
-          <a href="<?= base_url('student/pengumuman') ?>" class="inline-block px-5 py-2.5 bg-gradient-to-r from-rose-600 to-red-700 text-white text-[11px] font-bold uppercase tracking-wider rounded-lg hover:from-rose-700 hover:to-red-800 transition-all shadow-md"><i class="fas fa-envelope-open-text mr-1.5 text-sm"></i> Cek Kelulusan Sekarang</a>
-          <?php elseif($status == 'nunggu_pengumuman' || $status == 'dokumen_diterima'): ?>
-          <p class="text-xs text-emerald-700 mt-1 font-medium">Dokumen dan formulir Anda telah diterima oleh panitia. Hasil seleksi akan dirilis sesuai jadwal yang ditentukan.</p>
-          <?php elseif($status == 'perlu_revisi'): ?>
-          <p class="text-xs text-red-600 mt-1 font-medium">Segera perbaiki data/berkas yang ditandai oleh admin di atas.</p>
-          <?php endif; ?>
-        </div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 animate-fadeUp delay-2" style="opacity:0">
+  <!-- Column 1: Alur Pendaftaran -->
+  <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+              <i class="fas fa-list-ol text-[#419864] bg-[#E8F4EC] p-2 rounded-lg"></i>
+              <h4 class="font-bold text-slate-800 text-[15px]">Alur Pendaftaran</h4>
+          </div>
       </div>
-    </div>
+      <div class="space-y-4">
+          <div class="flex items-center space-x-4">
+              <div class="w-8 h-8 rounded-full <?= $status != 'belum_mendaftar' ? 'bg-[#419864] text-white' : 'bg-slate-100 text-slate-400' ?> flex items-center justify-center text-sm font-bold flex-shrink-0">1</div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Isi Formulir</p>
+              </div>
+              <p class="text-[10px] <?= $status != 'belum_mendaftar' ? 'text-emerald-600 font-bold' : 'text-slate-400' ?>"><?= $status != 'belum_mendaftar' ? 'Sudah diisi' : 'Belum' ?></p>
+          </div>
+          <div class="flex items-center space-x-4">
+              <div class="w-8 h-8 rounded-full <?= in_array($status, ['nunggu_verifikasi', 'dokumen_diterima', 'diterima', 'ditolak', 'nunggu_pengumuman']) ? 'bg-[#419864] text-white' : 'bg-slate-100 text-slate-400' ?> flex items-center justify-center text-sm font-bold flex-shrink-0">2</div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Upload Berkas</p>
+              </div>
+              <p class="text-[10px] <?= in_array($status, ['nunggu_verifikasi', 'dokumen_diterima', 'diterima', 'ditolak', 'nunggu_pengumuman']) ? 'text-emerald-600 font-bold' : 'text-slate-400' ?>"><?= in_array($status, ['nunggu_verifikasi', 'dokumen_diterima', 'diterima', 'ditolak', 'nunggu_pengumuman']) ? 'Sudah diunggah' : 'Belum' ?></p>
+          </div>
+          <div class="flex items-center space-x-4">
+              <div class="w-8 h-8 rounded-full <?= in_array($status, ['dokumen_diterima', 'diterima', 'ditolak', 'nunggu_pengumuman']) ? 'bg-[#419864] text-white' : 'bg-slate-100 text-slate-400' ?> flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Verifikasi Panitia</p>
+              </div>
+              <p class="text-[10px] <?= in_array($status, ['dokumen_diterima', 'diterima', 'ditolak', 'nunggu_pengumuman']) ? 'text-emerald-600 font-bold' : ($status == 'belum_mendaftar' ? 'text-slate-400' : 'text-amber-500 font-bold') ?>"><?= $status == 'belum_mendaftar' ? 'Menunggu' : (in_array($status, ['nunggu_verifikasi', 'perlu_revisi']) ? 'Proses Cek' : 'Selesai diverifikasi') ?></p>
+          </div>
+          <div class="flex items-center space-x-4">
+              <div class="w-8 h-8 rounded-full <?= in_array($status, ['nunggu_pengumuman', 'diterima', 'ditolak']) ? 'bg-[#419864] text-white' : 'bg-slate-100 text-slate-400' ?> flex items-center justify-center text-sm font-bold flex-shrink-0">4</div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Tes Baca Tulis</p>
+              </div>
+              <p class="text-[10px] font-bold <?= in_array($status, ['nunggu_pengumuman', 'diterima', 'ditolak']) ? 'text-slate-400' : 'text-[#419864]' ?>"><?= in_array($status, ['nunggu_pengumuman', 'diterima', 'ditolak']) ? 'Selesai' : 'Datang langsung' ?></p>
+          </div>
+          <div class="flex items-center space-x-4">
+              <div class="w-8 h-8 rounded-full <?= in_array($status, ['diterima', 'ditolak']) ? 'bg-[#419864] text-white' : 'bg-slate-100 text-slate-400' ?> flex items-center justify-center text-sm font-bold flex-shrink-0">5</div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Pengumuman</p>
+              </div>
+              <p class="text-[10px] text-slate-400"><?= in_array($status, ['diterima', 'ditolak']) ? 'Selesai' : 'Menunggu' ?></p>
+          </div>
+          <div class="flex items-center space-x-4">
+              <div class="w-8 h-8 rounded-full <?= $status === 'diterima' ? 'bg-[#419864] text-white' : 'bg-slate-100 text-slate-400' ?> flex items-center justify-center text-sm font-bold flex-shrink-0">6</div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Daftar Ulang</p>
+              </div>
+              <p class="text-[10px] font-bold <?= $status === 'diterima' ? 'text-emerald-600' : 'text-[#419864]' ?>"><?= $status === 'diterima' ? 'Selesai' : 'Datang langsung' ?></p>
+          </div>
+      </div>
+      <div class="mt-6 bg-[#E8F4EC] rounded-xl p-3 flex items-center space-x-2">
+          <i class="fas fa-smile text-[#FFB82E]"></i>
+          <p class="text-xs text-[#419864] font-semibold">Ikuti alur dengan tertib ya!</p>
+      </div>
   </div>
 
-  <?php if($catatan && !in_array($status, ['diterima', 'ditolak', 'perlu_revisi'])): ?>
-  <!-- Catatan Panitia -->
-  <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm card-hover overflow-hidden border-l-4 border-l-emerald-500">
-    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-      <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.15em]">Catatan Panitia PPDB</h4>
-    </div>
-    <div class="p-6">
-      <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
-        <i class="fas fa-quote-left text-slate-200 text-xl mb-2"></i>
-        <p class="text-sm font-medium text-slate-700 italic leading-relaxed"><?= htmlspecialchars($catatan) ?></p>
+  <!-- Column 2: Dokumen Persyaratan -->
+  <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+              <i class="fas fa-folder-open text-[#3E8ED0] bg-blue-50 p-2 rounded-lg"></i>
+              <h4 class="font-bold text-slate-800 text-[15px]">Dokumen Persyaratan</h4>
+          </div>
+          <a href="<?= base_url('student/form') ?>" class="text-[10px] text-[#419864] font-bold uppercase">Upload</a>
       </div>
-    </div>
+      <div class="space-y-4">
+          <div class="flex items-start space-x-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <div class="w-8 h-8 rounded-lg bg-red-100 text-red-500 flex items-center justify-center text-sm flex-shrink-0"><i class="fas fa-id-card"></i></div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Kartu Keluarga</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Wajib diunggah</p>
+              </div>
+          </div>
+          <div class="flex items-start space-x-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-500 flex items-center justify-center text-sm flex-shrink-0"><i class="fas fa-file-contract"></i></div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Akta Kelahiran</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Wajib diunggah</p>
+              </div>
+          </div>
+          <div class="flex items-start space-x-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <div class="w-8 h-8 rounded-lg bg-[#419864]/20 text-[#419864] flex items-center justify-center text-sm flex-shrink-0"><i class="fas fa-image"></i></div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Pas Foto 3x4</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Latar merah/biru</p>
+              </div>
+          </div>
+          <div class="flex items-start space-x-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-500 flex items-center justify-center text-sm flex-shrink-0"><i class="fas fa-graduation-cap"></i></div>
+              <div class="flex-1">
+                  <p class="text-sm font-bold text-slate-800">Ijasah / SKL</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Wajib diunggah</p>
+              </div>
+          </div>
+      </div>
   </div>
-  <?php endif; ?>
+
+  <!-- Column 3: Pengumuman / Catatan Panitia -->
+  <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+              <i class="fas fa-bullhorn text-[#FFB82E] bg-yellow-50 p-2 rounded-lg"></i>
+              <h4 class="font-bold text-slate-800 text-[15px]">Pesan Panitia</h4>
+          </div>
+      </div>
+      <div class="space-y-4">
+          <?php if(in_array($status, ['dokumen_diterima', 'nunggu_pengumuman'])): ?>
+          <?php
+            $release_time_raw = (new Settings_model())->getSetting('release_announcement_datetime');
+            $release_ts = strtotime($release_time_raw);
+          ?>
+          <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 rounded-xl p-4 shadow-sm text-center">
+              <div class="inline-flex items-center px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full mb-3 text-[10px] font-bold uppercase tracking-wider">
+                  <i class="fas fa-clock mr-1.5 animate-pulse"></i> Menunggu Pengumuman
+              </div>
+              <p class="text-[11px] text-emerald-700 font-medium mb-3">Rilis pada: <br><span class="font-bold text-emerald-900"><?= date('d F Y, H:i', $release_ts) ?> WIB</span></p>
+              
+              <div class="grid grid-cols-4 gap-2" id="countdown-grid">
+                  <div class="bg-white border border-emerald-100 shadow-sm rounded-lg p-2 text-center">
+                      <div class="text-base font-black text-emerald-600" id="cd-days">--</div>
+                      <div class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Hari</div>
+                  </div>
+                  <div class="bg-white border border-emerald-100 shadow-sm rounded-lg p-2 text-center">
+                      <div class="text-base font-black text-emerald-600" id="cd-hours">--</div>
+                      <div class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Jam</div>
+                  </div>
+                  <div class="bg-white border border-emerald-100 shadow-sm rounded-lg p-2 text-center">
+                      <div class="text-base font-black text-emerald-600" id="cd-mins">--</div>
+                      <div class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Mnt</div>
+                  </div>
+                  <div class="bg-white border border-emerald-100 shadow-sm rounded-lg p-2 text-center">
+                      <div class="text-base font-black text-emerald-600" id="cd-secs">--</div>
+                      <div class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Dtk</div>
+                  </div>
+              </div>
+          </div>
+          <script>
+          (function(){
+            const target = <?= $release_ts ?> * 1000;
+            function tick(){
+              const now = Date.now();
+              let diff = Math.max(0, Math.floor((target - now)/1000));
+              if(diff <= 0){ 
+                  document.getElementById('countdown-grid').innerHTML = '<div class="col-span-4 bg-emerald-100 p-3 rounded-lg text-emerald-800 font-bold text-[12px]">Waktu telah tiba! Menunggu panitia merilis hasil...</div>';
+                  return; 
+              }
+              const d = Math.floor(diff/86400); diff %= 86400;
+              const h = Math.floor(diff/3600);  diff %= 3600;
+              const m = Math.floor(diff/60);
+              const s = diff % 60;
+              document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+              document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+              document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
+              document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
+            }
+            tick();
+            setInterval(tick, 1000);
+          })();
+          </script>
+          
+          <?php elseif($catatan): ?>
+          <div class="bg-amber-50 rounded-xl p-4 border border-amber-100 flex items-start space-x-3">
+              <i class="fas fa-quote-left text-amber-300 text-lg mt-1"></i>
+              <div>
+                  <p class="text-sm text-amber-800 font-semibold mb-1">Catatan Verifikasi</p>
+                  <p class="text-xs text-amber-700/80 leading-relaxed"><?= htmlspecialchars($catatan) ?></p>
+              </div>
+          </div>
+          <?php else: ?>
+          <div class="bg-[#E8F4EC] rounded-xl p-4 border border-emerald-100 flex items-start space-x-3">
+              <i class="fas fa-info-circle text-[#419864] text-lg mt-1"></i>
+              <div>
+                  <p class="text-sm text-emerald-800 font-semibold mb-1">Tidak ada catatan</p>
+                  <p class="text-xs text-emerald-700/80 leading-relaxed">
+                      <?= in_array($status, ['diterima', 'ditolak']) ? 'Pendaftaran Anda telah selesai diproses.' : 'Pendaftaran Anda sedang dalam proses atau belum diverifikasi panitia.' ?>
+                  </p>
+              </div>
+          </div>
+          <?php endif; ?>
+          
+          <a href="https://wa.me/6282225600522?text=Assalamualaikum%20saya%20mengalami%20kendala%20bisa%20bantu%20saya" target="_blank" class="block bg-blue-50 hover:bg-blue-100 rounded-xl p-4 border border-blue-200 flex items-start space-x-3 mt-4 transition-colors cursor-pointer group shadow-sm">
+              <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white flex-shrink-0 mt-0.5 group-hover:bg-blue-700 transition-colors shadow-sm">
+                  <i class="fab fa-whatsapp text-xl"></i>
+              </div>
+              <div>
+                  <p class="text-sm text-blue-900 font-bold mb-1">Butuh Bantuan?</p>
+                  <p class="text-[11px] text-blue-700 font-medium leading-relaxed">Klik untuk chat Admin PPDB via WhatsApp jika Anda mengalami kendala pendaftaran.</p>
+              </div>
+          </a>
+      </div>
+  </div>
 </div>
+
+<!-- Doa Harian Removed -->
 
 
 

@@ -36,11 +36,43 @@ class StudentController extends Controller {
         $this->initAllModels();
         $this->syncNotifSession();
         $data['pendaftaran'] = $this->getAdjustedPendaftaran($uid);
-        $data['pribadi']     = $this->model('DataPribadi_model')->getByUserId($uid);
+        
+        $pribadi = $this->model('DataPribadi_model')->getByUserId($uid);
+        $ayah = $this->model('DataAyah_model')->getByUserId($uid);
+        $ibu = $this->model('DataIbu_model')->getByUserId($uid);
+        $kontak = $this->model('DataKontak_model')->getByUserId($uid);
+        $periodik = $this->model('DataPeriodik_model')->getByUserId($uid);
+        $dokumen = $this->model('Dokumen_model')->getByUserId($uid);
+        $data['pribadi'] = $pribadi;
+
+        $total_sections = 6;
+        $filled_sections = 0;
+        if (!empty(trim($pribadi['nama_lengkap'] ?? ''))) $filled_sections++;
+        if (!empty(trim($ayah['nama_ayah'] ?? ''))) $filled_sections++;
+        if (!empty(trim($ibu['nama_ibu'] ?? ''))) $filled_sections++;
+        if (!empty(trim($kontak['notlp_rumah'] ?? '')) || !empty(trim($kontak['no_hp'] ?? ''))) $filled_sections++;
+        if (!empty(trim($periodik['tinggi_badan'] ?? ''))) $filled_sections++;
+        if (!empty(trim($dokumen['kk'] ?? '')) || !empty(trim($dokumen['akta'] ?? ''))) $filled_sections++;
+        
+        $data['progress_percent'] = round(($filled_sections / $total_sections) * 100);
+
         $settings = $this->model('Settings_model');
         $active_gel = $settings->getSetting('gelombang_aktif') ?? 1;
         $data['jadwal_daftar'] = $settings->getSetting("jadwal_g{$active_gel}_daftar") ?? 'Belum ditentukan';
-        $data['jadwal_tes'] = $settings->getSetting("jadwal_g{$active_gel}_sosial") ?? 'Menunggu Info Admin';
+        
+        $jadwal = $data['pendaftaran']['jadwal_tes'] ?? null;
+        if ($jadwal) {
+            // Format to Indonesian date (e.g., 01 Juli 2026)
+            $months = ['01'=>'Januari','02'=>'Februari','03'=>'Maret','04'=>'April','05'=>'Mei','06'=>'Juni','07'=>'Juli','08'=>'Agustus','09'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'];
+            $parts = explode('-', $jadwal);
+            if (count($parts) === 3) {
+                $data['jadwal_tes'] = $parts[2] . ' ' . $months[$parts[1]] . ' ' . $parts[0];
+            } else {
+                $data['jadwal_tes'] = $jadwal;
+            }
+        } else {
+            $data['jadwal_tes'] = 'Menunggu Info Admin';
+        }
         
         $this->view('student/dashboard', $data);
     }
@@ -59,8 +91,10 @@ class StudentController extends Controller {
         $data['ayah']     = $this->model('DataAyah_model')->getByUserId($uid);
         $data['ibu']      = $this->model('DataIbu_model')->getByUserId($uid);
         $data['wali']     = $this->model('DataWali_model')->getByUserId($uid);
-        $data['kontak']   = $this->model('DataKontak_model')->getByUserId($uid);
+        $data['kontak'] = $this->model('DataKontak_model')->getByUserId($uid);
         $data['periodik'] = $this->model('DataPeriodik_model')->getByUserId($uid);
+        $data['dokumen'] = $this->model('Dokumen_model')->getByUserId($uid);
+        
         $this->view('student/form_wizard', $data);
     }
 
@@ -117,6 +151,67 @@ class StudentController extends Controller {
         }
     }
 
+    public function save_upload_ajax() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (!$this->isEditable()) {
+                echo json_encode(['status' => 'error', 'message' => 'Data tidak dapat diubah']);
+                exit;
+            }
+            $fields = ['ijazah', 'kk', 'akta', 'foto_3x4'];
+            $has_error = false;
+            $error_msg = '';
+
+            foreach ($fields as $field) {
+                if (isset($_FILES[$field]) && $_FILES[$field]['error'] !== UPLOAD_ERR_NO_FILE) {
+                    $file = $_FILES[$field];
+                    
+                    if ($file['error'] !== UPLOAD_ERR_OK) {
+                        $has_error = true;
+                        $error_msg = 'Upload gagal untuk ' . $field;
+                        continue;
+                    }
+
+                    $allowed = [];
+                    if ($field === 'foto_3x4') {
+                        $allowed = ['image/jpeg', 'image/png', 'image/jpg'];
+                    } else if (in_array($field, ['kk', 'akta', 'ijazah'])) {
+                        $allowed = ['application/pdf'];
+                    }
+
+                    if (empty($allowed) || !in_array($file['type'], $allowed)) {
+                        $has_error = true;
+                        $error_msg = 'Format ' . $field . ' tidak valid.';
+                        continue;
+                    }
+
+                    if ($file['size'] > 2 * 1024 * 1024) {
+                        $has_error = true;
+                        $error_msg = 'Ukuran file ' . $field . ' terlalu besar (Max 2MB).';
+                        continue;
+                    }
+
+                    $dir = '../public/uploads/dokumen/';
+                    if (!is_dir($dir)) mkdir($dir, 0777, true);
+
+                    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                    $filename = $_SESSION['user_id'] . '_' . $field . '_' . time() . '.' . $ext;
+                    if (move_uploaded_file($file['tmp_name'], $dir . $filename)) {
+                        $this->model('Dokumen_model')->saveField($field, 'uploads/dokumen/' . $filename, $_SESSION['user_id']);
+                    } else {
+                        $has_error = true;
+                        $error_msg = 'Gagal menyimpan file ' . $field;
+                    }
+                }
+            }
+
+            if ($has_error) {
+                echo json_encode(['status' => 'error', 'message' => $error_msg]);
+            } else {
+                echo json_encode(['status' => 'success']);
+            }
+        }
+    }
+
     public function submit_form() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!$this->isEditable()) {
@@ -129,38 +224,60 @@ class StudentController extends Controller {
             $ibu = $this->model('DataIbu_model')->getByUserId($uid);
             $kontak = $this->model('DataKontak_model')->getByUserId($uid);
             $periodik = $this->model('DataPeriodik_model')->getByUserId($uid);
+            $dokumen = $this->model('Dokumen_model')->getByUserId($uid);
+            $wali = $this->model('DataWali_model')->getByUserId($uid);
+
+            // Cek status pengisian penanggung jawab
+            $has_ayah = trim($ayah['nama_ayah'] ?? '') !== '' && trim($ayah['nama_ayah'] ?? '') !== '-';
+            $has_ibu = trim($ibu['nama_ibu'] ?? '') !== '' && trim($ibu['nama_ibu'] ?? '') !== '-';
+            $has_ortu = $has_ayah || $has_ibu;
+            $has_wali = trim($wali['nama_wali'] ?? '') !== '' && trim($wali['nama_wali'] ?? '') !== '-';
+
+            // Kalo kolom orang tua di isi wali ga bisa dikirim
+            if ($has_ortu && $has_wali) {
+                header('Location: ' . base_url('student/form?error=conflict_wali'));
+                exit;
+            }
+
+            // Kalo kolom orang tua engga, wali engga juga -> tidak bisa dikirim
+            if (!$has_ortu && !$has_wali) {
+                header('Location: ' . base_url('student/form?error=no_parent_wali'));
+                exit;
+            }
 
             $is_incomplete = false;
+            $missing_field = '';
             $required = [
                 // Pribadi
-                $pribadi['nama_lengkap']??'', $pribadi['jenis_kelamin']??'', $pribadi['nisn']??'', $pribadi['nik']??'', $pribadi['no_kk']??'',
-                $pribadi['tempat_lahir']??'', $pribadi['tanggal_lahir']??'', $pribadi['kewarganegaraan']??'', $pribadi['alamat_jalan']??'',
-                $pribadi['rt']??'', $pribadi['rw']??'', $pribadi['dusun']??'', $pribadi['kelurahan']??'', $pribadi['kecamatan']??'',
-                $pribadi['kode_pos']??'', $pribadi['anak_ke']??'', $pribadi['punya_kip']??'', $pribadi['tempat_tinggal']??'', $pribadi['moda_transportasi']??'',
-                // Ayah
-                $ayah['nama_ayah']??'', $ayah['nik_ayah']??'', $ayah['tahun_lahir_ayah']??'', $ayah['pendidikan_ayah']??'', $ayah['pekerjaan_ayah']??'', $ayah['penghasilan_bulanan_ayah']??'',
-                // Ibu
-                $ibu['nama_ibu']??'', $ibu['nik_ibu']??'', $ibu['tahun_lahir_ibu']??'', $ibu['pendidikan_ibu']??'', $ibu['pekerjaan_ibu']??'', $ibu['penghasilan_bulanan_ibu']??'',
+                'nama_lengkap' => $pribadi['nama_lengkap']??'', 'jenis_kelamin' => $pribadi['jenis_kelamin']??'', 'nisn' => $pribadi['nisn']??'', 'nik' => $pribadi['nik']??'', 'no_kk' => $pribadi['no_kk']??'',
+                'tempat_lahir' => $pribadi['tempat_lahir']??'', 'tanggal_lahir' => $pribadi['tanggal_lahir']??'', 'kewarganegaraan' => $pribadi['kewarganegaraan']??'', 'alamat_jalan' => $pribadi['alamat_jalan']??'',
+                'rt' => $pribadi['rt']??'', 'rw' => $pribadi['rw']??'', 'kelurahan' => $pribadi['kelurahan']??'',
+                'kode_pos' => $pribadi['kode_pos']??'',
+
                 // Kontak & Periodik
-                $kontak['notlp_rumah']??'', $kontak['no_hp']??'',
-                $periodik['tinggi_badan']??'', $periodik['berat_badan']??'', $periodik['lingkar_kepala']??'', $periodik['jarak_tempat_tinggal']??'', $periodik['jarak_km']??'',
-                $periodik['waktu_jam']??'', $periodik['waktu_menit']??'', $periodik['jumlah_saudara_kandung']??''
+                'notlp_rumah' => $kontak['notlp_rumah']??'', 'no_hp' => $kontak['no_hp']??'',
+                'tinggi_badan' => $periodik['tinggi_badan']??'', 'berat_badan' => $periodik['berat_badan']??'', 'jarak_tempat_tinggal' => $periodik['jarak_tempat_tinggal']??'', 'jarak_km' => $periodik['jarak_km']??'',
+                'waktu_jam' => $periodik['waktu_jam']??'', 'waktu_menit' => $periodik['waktu_menit']??'', 'jumlah_saudara_kandung' => $periodik['jumlah_saudara_kandung']??'',
+                
+                // Upload Dokumen
+                'kk' => $dokumen['kk']??'', 'akta' => $dokumen['akta']??'', 'foto_3x4' => $dokumen['foto_3x4']??''
             ];
             
-            foreach ($required as $val) {
+            foreach ($required as $key => $val) {
                 if (trim($val) === '') {
                     $is_incomplete = true;
+                    $missing_field = $key;
                     break;
                 }
             }
 
             if ($is_incomplete) {
-                header('Location: ' . base_url('student/form?error=incomplete'));
+                header('Location: ' . base_url('student/form?error=incomplete&f='.$missing_field));
                 exit;
             }
 
             $this->model('Pendaftaran_model')->submit($uid);
-            header('Location: ' . base_url('student/upload?success=form_submitted'));
+            header('Location: ' . base_url('student/dashboard?success=form_submitted'));
             exit;
         }
     }
@@ -268,6 +385,19 @@ class StudentController extends Controller {
             header('Location: ' . base_url('student'));
             exit;
         }
+        $jadwal = $data['pendaftaran']['jadwal_tes'] ?? null;
+        if ($jadwal) {
+            $months = ['01'=>'Januari','02'=>'Februari','03'=>'Maret','04'=>'April','05'=>'Mei','06'=>'Juni','07'=>'Juli','08'=>'Agustus','09'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'];
+            $parts = explode('-', $jadwal);
+            if (count($parts) === 3) {
+                $data['jadwal_tes_formatted'] = $parts[2] . ' ' . $months[$parts[1]] . ' ' . $parts[0];
+            } else {
+                $data['jadwal_tes_formatted'] = $jadwal;
+            }
+        } else {
+            $data['jadwal_tes_formatted'] = '-';
+        }
+        
         $this->view('student/cetak_kartu', $data);
     }
 
@@ -276,6 +406,19 @@ class StudentController extends Controller {
         $this->syncNotifSession();
         $data['pendaftaran'] = $this->getAdjustedPendaftaran($uid);
         $data['pribadi']     = $this->model('DataPribadi_model')->getByUserId($uid);
+        
+        $jadwal = $data['pendaftaran']['jadwal_tes'] ?? null;
+        if ($jadwal) {
+            $months = ['01'=>'Januari','02'=>'Februari','03'=>'Maret','04'=>'April','05'=>'Mei','06'=>'Juni','07'=>'Juli','08'=>'Agustus','09'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'];
+            $parts = explode('-', $jadwal);
+            if (count($parts) === 3) {
+                $data['jadwal_tes'] = $parts[2] . ' ' . $months[$parts[1]] . ' ' . $parts[0];
+            } else {
+                $data['jadwal_tes'] = $jadwal;
+            }
+        } else {
+            $data['jadwal_tes'] = 'Menunggu Info Admin';
+        }
         
         $this->view('student/pengumuman', $data);
     }

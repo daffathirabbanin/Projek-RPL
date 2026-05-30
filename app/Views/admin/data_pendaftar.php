@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Pendaftar | Admin PPDB</title>
+    <title>Verifikasi Pendaftar | Admin PPDB</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -16,8 +16,10 @@
 
     <main class="flex-1 flex flex-col h-full overflow-y-auto">
         <header class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-200/60 sticky top-0 z-10">
-            <h2 class="text-xl font-black text-slate-800 tracking-tight">DATA PENDAFTAR</h2>
-            <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-0.5">Seluruh calon peserta didik baru</p>
+            <div>
+                <h2 class="text-2xl font-black text-emerald-800 tracking-tight">Verifikasi Pendaftar</h2>
+                <p class="text-[13px] text-slate-500 font-bold mt-1 tracking-wide">Validasi dokumen dan penentuan status kelulusan siswa</p>
+            </div>
         </header>
         <div class="p-8 max-w-6xl mx-auto w-full pb-20">
             <?php if(isset($_GET['success'])): ?>
@@ -34,10 +36,10 @@
                 <?php endif; ?>
             <?php endif; ?>
 
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-table"></i></div>
-                    <h3 class="font-black text-slate-800 text-sm uppercase tracking-tight">Tabel Pendaftar</h3>
+            <div class="bg-white rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-100 bg-white flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-[14px] flex items-center justify-center text-lg"><i class="fas fa-table"></i></div>
+                    <h3 class="font-black text-slate-800 text-sm uppercase tracking-tight">Daftar Antrean Validasi</h3>
                     <span id="pendaftar-count" class="ml-auto text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full"><?= count($data['pendaftar'] ?? []) ?> siswa</span>
                 </div>
                 
@@ -53,7 +55,6 @@
                     <div class="relative w-full sm:w-56">
                         <select id="filter-status" onchange="filterTable()" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl text-xs bg-white focus:border-emerald-500 focus:outline-none transition-colors cursor-pointer text-slate-600 font-medium">
                             <option value="all">Semua Status</option>
-                            <option value="belum_mendaftar">Draft</option>
                             <option value="nunggu_verifikasi">Menunggu Verifikasi</option>
                             <option value="dokumen_diterima">Berkas Valid (Dokumen Diterima)</option>
                             <option value="diterima">Diterima</option>
@@ -73,7 +74,7 @@
                             <tr><td colspan="6" class="text-center py-16 text-slate-400 font-bold"><i class="fas fa-inbox text-3xl mb-3 block text-slate-300"></i>Belum ada data pendaftar.</td></tr>
                             <?php else: foreach($data['pendaftar'] as $i => $row):
                                 $s = $row['status'];
-                                $badge = ['belum_mendaftar'=>'bg-slate-100 text-slate-600','nunggu_verifikasi'=>'bg-amber-100 text-amber-700','dokumen_diterima'=>'bg-blue-100 text-blue-700','diterima'=>'bg-emerald-100 text-emerald-700','ditolak'=>'bg-red-100 text-red-700','perlu_revisi'=>'bg-rose-100 text-rose-700'];
+                                $badge = ['belum_mendaftar'=>'bg-slate-100 text-slate-600','nunggu_verifikasi'=>'bg-amber-100 text-amber-700','dokumen_diterima'=>'bg-teal-100 text-teal-700','diterima'=>'bg-emerald-100 text-emerald-700','ditolak'=>'bg-red-100 text-red-700','perlu_revisi'=>'bg-rose-100 text-rose-700'];
                                 $label = ['belum_mendaftar'=>'Draft','nunggu_verifikasi'=>'Menunggu Verifikasi','dokumen_diterima'=>'Berkas Valid','diterima'=>'Diterima','ditolak'=>'Ditolak','perlu_revisi'=>'Perlu Revisi'];
                             ?>
                             <tr class="pendaftar-row hover:bg-slate-50/50 transition-colors" data-status="<?= $s ?>" data-search="<?= strtolower(htmlspecialchars($row['nama'] ?? '') . ' ' . htmlspecialchars($row['email'] ?? '')) ?>">
@@ -81,16 +82,12 @@
                                 <td class="px-6 py-4 font-bold text-slate-800"><?= htmlspecialchars($row['nama'] ?? 'Belum Isi') ?></td>
                                 <td class="px-6 py-4 text-sm text-slate-500"><?= htmlspecialchars($row['email']) ?></td>
                                 <td class="px-6 py-4 text-sm text-slate-500"><?= htmlspecialchars($row['no_hp'] ?? '-') ?></td>
-                                <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider <?= $badge[$s] ?? '' ?>"><?= $label[$s] ?? $s ?></span></td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 whitespace-nowrap"><span class="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider <?= $badge[$s] ?? '' ?>"><?= $label[$s] ?? $s ?></span></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-2">
-                                        <a href="<?= base_url('admin/detail/' . $row['id']) ?>" title="Verifikasi" class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-colors"><i class="fas fa-eye text-xs"></i></a>
-                                        
-                                        <button type="button" onclick="openResetModal('<?= $row['user_id'] ?>', '<?= htmlspecialchars($row['nama'] ?? 'Siswa') ?>')" title="Reset Password" class="w-8 h-8 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center hover:bg-amber-600 hover:text-white transition-colors">
-                                            <i class="fas fa-pen text-xs"></i>
-                                        </button>
-                                        
-                                        <a href="<?= base_url('admin/delete_pendaftar/' . $row['user_id']) ?>" onclick="return confirm('Yakin ingin menghapus akun ini secara permanen beserta semua data pendaftarannya?')" title="Hapus Akun" class="w-8 h-8 bg-red-100 text-red-600 rounded-lg flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"><i class="fas fa-trash text-xs"></i></a>
+                                        <a href="<?= base_url('admin/detail/' . $row['id']) ?>" title="Verifikasi Data" class="px-4 py-1.5 bg-emerald-50 text-emerald-600 font-bold rounded-lg text-[10px] hover:bg-emerald-600 hover:text-white transition-colors border border-emerald-100 flex items-center shadow-sm whitespace-nowrap">
+                                            <i class="fas fa-search-plus mr-1.5"></i> Periksa Data
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

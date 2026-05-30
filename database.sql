@@ -274,6 +274,7 @@ CREATE TABLE `pendaftaran` (
   `status` enum('belum_mendaftar','nunggu_verifikasi','dokumen_diterima','diterima','ditolak','perlu_revisi','nunggu_pengumuman') DEFAULT 'belum_mendaftar',
   `catatan` text DEFAULT NULL,
   `revisi_json` text DEFAULT NULL,
+  `jadwal_tes` date DEFAULT NULL,
   `verified_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),

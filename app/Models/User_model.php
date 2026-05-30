@@ -49,4 +49,25 @@ class User_model {
         $this->db->bind('id', $id);
         return $this->db->execute();
     }
+
+    public function saveResetToken($email, $token, $expires) {
+        $this->db->query('UPDATE users SET reset_token = :token, reset_token_expires = :expires WHERE email = :email');
+        $this->db->bind('token', $token);
+        $this->db->bind('expires', $expires);
+        $this->db->bind('email', $email);
+        return $this->db->execute();
+    }
+
+    public function verifyResetToken($email, $token) {
+        $this->db->query('SELECT * FROM users WHERE email = :email AND reset_token = :token AND reset_token_expires >= NOW()');
+        $this->db->bind('email', $email);
+        $this->db->bind('token', $token);
+        return $this->db->single();
+    }
+
+    public function clearResetToken($email) {
+        $this->db->query('UPDATE users SET reset_token = NULL, reset_token_expires = NULL WHERE email = :email');
+        $this->db->bind('email', $email);
+        return $this->db->execute();
+    }
 }

@@ -6,8 +6,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f1f5f9}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+body{font-family:'Poppins',sans-serif;background:#f8fafc}
 .card-hover{transition:all .3s cubic-bezier(.4,0,.2,1)}.card-hover:hover{transform:translateY(-4px);box-shadow:0 20px 25px -5px rgba(0,0,0,.06)}
 </style>
 </head>
@@ -15,9 +15,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f1f5f9}
 <?php require_once '../app/Views/student/_sidebar.php'; studentSidebar('upload'); ?>
 
 <main class="flex-1 flex flex-col h-full overflow-y-auto">
-<header class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-200/60 sticky top-0 z-10">
-  <h2 class="text-xl font-black text-slate-800 tracking-tight">UPLOAD BERKAS PERSYARATAN</h2>
-  <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-0.5">Unggah dokumen dalam format PDF atau JPG/PNG (Maks. 2MB)</p>
+<header class="bg-white px-8 py-5 border-b border-slate-200/80 sticky top-0 z-30 flex justify-between items-center shadow-sm">
+  <div>
+    <h2 class="text-2xl font-bold text-[#1a5632] tracking-tight">Upload Berkas Persyaratan</h2>
+    <p class="text-[13px] text-slate-500 font-medium mt-1">Unggah dokumen dalam format PDF atau JPG/PNG (Maks. 2MB)</p>
+  </div>
 </header>
 
 <div class="p-8 max-w-5xl mx-auto w-full pb-20">

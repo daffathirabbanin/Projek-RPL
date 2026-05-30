@@ -7,14 +7,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&family=IM+Fell+English:ital@0;1&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap');
-
-        * { box-sizing: border-box; }
-        body { font-family: 'Source Serif 4', 'Noto Serif', Georgia, serif; background-color: #e8e8e8; }
-
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        
+        @media print {
+            @page { margin: 0; size: A4; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background-color: white !important; }
+            .no-print { display: none !important; }
+        }
+        body { font-family: 'Poppins', sans-serif; background-color: #e8e8e8; }
+        
         .document {
-            font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+            font-family: 'Times New Roman', Times, serif;
             background: white;
             color: #1a1a1a;
         }
@@ -126,50 +129,61 @@
                 <!-- ── KOP SURAT ── -->
                 <div class="kop-border-outer">
                     <div class="kop-border-inner p-0">
-                        <!-- Header KOP -->
-                        <div class="flex items-center gap-4 px-6 py-4 border-b-4 border-double border-[#1a3a2a]">
-                            <!-- Logo Kiri -->
-                            <div class="flex-shrink-0">
-                                <img src="<?= base_url('img/logo.jpeg') ?>" alt="Logo MI" class="w-[72px] h-[72px] object-cover rounded-full border-2 border-[#1a3a2a]">
-                            </div>
-
-                            <!-- Teks Tengah -->
-                            <div class="flex-1 text-center leading-snug">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1a3a2a]">KEMENTERIAN AGAMA REPUBLIK INDONESIA</p>
-                                <h1 class="text-[22px] font-black uppercase tracking-widest text-[#1a3a2a] leading-none mt-0.5">MI NURUL IKHLAS AL-AYUBI</h1>
-                                <p class="text-[10px] font-semibold text-slate-600 mt-0.5">Jl. Contoh No. 1, Kel. Kelurahan, Kec. Kecamatan, Kota / Kab.</p>
-                                <p class="text-[10px] text-slate-500">Telp: (021) 000-0000 &nbsp;|&nbsp; Email: ppdb@mi-nuruliikhlas.sch.id &nbsp;|&nbsp; NPSN: 69999999</p>
-                            </div>
-
-                            <!-- Lambang Garuda / logo kanan -->
-                            <div class="flex-shrink-0 text-center">
-                                <img src="<?= base_url('img/logo.jpeg') ?>" alt="Logo" class="w-[72px] h-[72px] object-cover rounded-full border-2 border-[#1a3a2a] opacity-60 grayscale">
-                            </div>
-                        </div>
-
-                        <!-- Judul Formulir -->
-                        <div class="py-3 text-center border-b border-[#1a3a2a]">
-                            <h2 class="text-[15px] font-black uppercase tracking-[0.25em] text-[#1a3a2a]">FORMULIR PENDAFTARAN PESERTA DIDIK BARU</h2>
-                            <p class="text-[11px] font-semibold text-slate-600 tracking-widest">TAHUN PELAJARAN <?= $tahun ?></p>
-                        </div>
-
-                        <!-- No. Pendaftaran & Tanggal -->
-                        <div class="flex justify-between items-center px-6 py-2 bg-[#f0f7f4] border-b border-[#1a3a2a]/30">
-                            <div class="flex gap-8">
-                                <div>
-                                    <span class="text-[9px] font-bold text-[#1a3a2a] uppercase tracking-wider">No. Pendaftaran</span>
-                                    <span class="ml-2 text-[12px] font-black text-[#1a3a2a] font-mono tracking-widest"><?= $reg_no ?></span>
+                        
+                        <!-- HEADER AREA (Kop, Judul, Info) menggunakan font Sans-Serif -->
+                        <div style="font-family: 'Inter', sans-serif;">
+                            <!-- Header KOP -->
+                            <div class="flex items-center gap-4 px-6 py-4 border-b-4 border-double border-[#1a3a2a]">
+                                <!-- Logo Kiri -->
+                                <div class="flex-shrink-0">
+                                    <img src="<?= base_url('img/logo.jpeg') ?>" alt="Logo MI" class="w-[72px] h-[72px] object-cover rounded-full border-2 border-[#1a3a2a]">
                                 </div>
-                                <div>
-                                    <span class="text-[9px] font-bold text-[#1a3a2a] uppercase tracking-wider">Tanggal Daftar</span>
-                                    <span class="ml-2 text-[12px] font-bold text-slate-700"><?= date('d F Y', strtotime($data['pendaftaran']['created_at'] ?? 'now')) ?></span>
+
+                                <!-- Teks Tengah -->
+                                <div class="flex-1 text-center leading-snug">
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1a3a2a]">KEMENTERIAN AGAMA REPUBLIK INDONESIA</p>
+                                    <h1 class="text-[22px] font-black uppercase tracking-widest text-[#1a3a2a] leading-none mt-0.5">MI NURUL IKHLAS AL-AYUBI</h1>
+                                    <p class="text-[10px] font-semibold text-slate-600 mt-0.5">Jl. Contoh No. 1, Kel. Kelurahan, Kec. Kecamatan, Kota / Kab.</p>
+                                    <p class="text-[10px] text-slate-500">Telp: (021) 000-0000 &nbsp;|&nbsp; Email: ppdb@mi-nuruliikhlas.sch.id &nbsp;|&nbsp; NPSN: 69999999</p>
+                                </div>
+
+                                <!-- Lambang Garuda / logo kanan -->
+                                <div class="flex-shrink-0 text-center">
+                                    <img src="<?= base_url('img/logo.jpeg') ?>" alt="Logo" class="w-[72px] h-[72px] object-cover rounded-full border-2 border-[#1a3a2a] opacity-60 grayscale">
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <span class="text-[9px] font-bold text-[#1a3a2a] uppercase tracking-wider">Status</span>
-                                <span class="ml-2 text-[11px] font-black uppercase text-[#1a3a2a] tracking-wider"><?= fv($data['pendaftaran']['status'] ?? '', 'Belum Mendaftar') ?></span>
+
+                            <!-- Judul Formulir -->
+                            <div class="py-3 text-center border-b border-[#1a3a2a]">
+                                <h2 class="text-[15px] font-black uppercase tracking-[0.25em] text-[#1a3a2a]">FORMULIR PENDAFTARAN PESERTA DIDIK BARU</h2>
+                                <p class="text-[11px] font-semibold text-slate-600 tracking-widest">TAHUN PELAJARAN <?= $tahun ?></p>
+                            </div>
+
+                            <!-- No. Pendaftaran & Tanggal -->
+                            <div class="flex justify-between items-center px-6 py-2 bg-[#f0f7f4] border-b border-[#1a3a2a]/30">
+                                <div class="flex gap-8">
+                                    <div>
+                                        <span class="text-[9px] font-bold text-[#1a3a2a] uppercase tracking-wider">No. Pendaftaran</span>
+                                        <span class="ml-2 text-[12px] font-black text-[#1a3a2a] font-mono tracking-widest"><?= $reg_no ?></span>
+                                    </div>
+                                    <div>
+                                        <span class="text-[9px] font-bold text-[#1a3a2a] uppercase tracking-wider">Tanggal Daftar</span>
+                                        <span class="ml-2 text-[11px] font-bold text-slate-700 tracking-wider"><?= date('d F Y', strtotime($data['pendaftaran']['created_at'] ?? 'now')) ?></span>
+                                    </div>
+                                    <?php if(!empty($data['jadwal_tes_formatted'])): ?>
+                                    <div>
+                                        <span class="text-[9px] font-bold text-[#1a3a2a] uppercase tracking-wider">Jadwal Tes</span>
+                                        <span class="ml-2 text-[11px] font-bold text-teal-700 tracking-wider"><?= $data['jadwal_tes_formatted'] ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] font-bold text-[#1a3a2a] uppercase tracking-wider">Status</span>
+                                    <span class="ml-2 text-[11px] font-black text-[#1a3a2a] uppercase tracking-widest"><?= str_replace('_', ' ', fv($data['pendaftaran']['status'] ?? '', 'Belum Mendaftar')) ?></span>
+                                </div>
                             </div>
                         </div>
+
 
                         <!-- ════════════════════════════════════════════
                              A. DATA PRIBADI
@@ -216,13 +230,13 @@
                                 frow('Alamat Jalan', $p['alamat_jalan'] ?? '');
                                 $rt_rw = 'RT ' . fv($p['rt'] ?? '') . ' / RW ' . fv($p['rw'] ?? '');
                                 frow('RT / RW', $rt_rw);
-                                frow('Dusun', $p['dusun'] ?? '');
+
                                 frow('Kelurahan / Desa', $p['kelurahan'] ?? '');
                                 frow('Kecamatan', $p['kecamatan'] ?? '');
                                 frow('Kode Pos', $p['kode_pos'] ?? '');
                                 $tinggal_map = ['ortu'=>'Bersama Orang Tua','wali'=>'Bersama Wali','kos'=>'Kos','asrama'=>'Asrama','panti'=>'Panti Asuhan','lainnya'=>'Lainnya'];
                                 frow('Status Tempat Tinggal', $tinggal_map[$p['tempat_tinggal'] ?? ''] ?? ($p['tempat_tinggal'] ?? ''));
-                                frow('Moda Transportasi', ucfirst($p['moda_transportasi'] ?? ''));
+
                                 ?>
                             </div>
                         </div>
@@ -288,7 +302,7 @@
                                 frow('Alamat Email', $kontak['email'] ?? '');
                                 frow('Tinggi Badan', !empty($periodik['tinggi_badan']) ? $periodik['tinggi_badan'] . ' cm' : '');
                                 frow('Berat Badan', !empty($periodik['berat_badan']) ? $periodik['berat_badan'] . ' kg' : '');
-                                frow('Lingkar Kepala', !empty($periodik['lingkar_kepala']) ? $periodik['lingkar_kepala'] . ' cm' : '');
+
                                 frow('Jumlah Saudara Kandung', $periodik['jumlah_saudara_kandung'] ?? '');
                                 $waktu = '';
                                 if(!empty($periodik['waktu_jam']) || !empty($periodik['waktu_menit'])){

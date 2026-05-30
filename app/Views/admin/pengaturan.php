@@ -8,7 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-    body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:#FAFAFA}
     </style>
 </head>
 <body class="text-slate-800 flex h-screen overflow-hidden">
@@ -16,9 +16,11 @@
     <?php require_once '../app/Views/admin/_sidebar.php'; adminSidebar('pengaturan'); ?>
 
     <main class="flex-1 flex flex-col h-full overflow-y-auto">
-        <header class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-200/60 sticky top-0 z-10">
-            <h2 class="text-xl font-black text-slate-800 tracking-tight">PENGATURAN SISTEM</h2>
-            <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-0.5">Konfigurasi batas maksimal pendaftaran</p>
+        <header class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-200/60 sticky top-0 z-10 flex justify-between items-center">
+            <div>
+                <h2 class="text-2xl font-black text-emerald-800 tracking-tight">Pengaturan Sistem</h2>
+                <p class="text-[13px] text-slate-500 font-bold mt-1 tracking-wide">Konfigurasi pengaturan utama aplikasi PPDB</p>
+            </div>
         </header>
 
         <div class="p-8 max-w-4xl mx-auto w-full pb-20">
@@ -54,7 +56,7 @@
                                 <p class="mt-3 text-xs text-slate-500 font-medium">Gelombang aktif akan ditampilkan pada tombol "Daftar" di halaman utama.</p>
                             </div>
                             <div class="pt-2 flex justify-end">
-                                <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-xl shadow-md shadow-teal-200 hover:-translate-y-0.5 transition-all flex items-center space-x-2 text-sm">
+                                <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl shadow-md shadow-teal-200 hover:-translate-y-0.5 transition-all flex items-center space-x-2 text-sm">
                                     <i class="fas fa-save"></i> <span>Simpan</span>
                                 </button>
                             </div>
@@ -128,27 +130,60 @@
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Jumlah Siswa</label>
                                 <input type="text" name="stats_siswa" value="<?= htmlspecialchars($data['stats_siswa'] ?? '250+') ?>" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
-                                <p class="mt-1 text-[9px] text-slate-400 font-bold">Contoh: 250+</p>
+                                <p class="mt-1 text-[9px] text-slate-400 font-bold">250+</p>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Jumlah Guru</label>
                                 <input type="text" name="stats_guru" value="<?= htmlspecialchars($data['stats_guru'] ?? '15+') ?>" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
-                                <p class="mt-1 text-[9px] text-slate-400 font-bold">Contoh: 15+</p>
+                                <p class="mt-1 text-[9px] text-slate-400 font-bold">15+</p>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Jumlah Eskul</label>
                                 <input type="text" name="stats_eskul" value="<?= htmlspecialchars($data['stats_eskul'] ?? '8+') ?>" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
-                                <p class="mt-1 text-[9px] text-slate-400 font-bold">Contoh: 8+</p>
+                                <p class="mt-1 text-[9px] text-slate-400 font-bold">8+</p>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nilai Akreditasi</label>
                                 <input type="text" name="stats_akreditasi" value="<?= htmlspecialchars($data['stats_akreditasi'] ?? 'BAIK') ?>" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
-                                <p class="mt-1 text-[9px] text-slate-400 font-bold">Contoh: BAIK / A</p>
+                                <p class="mt-1 text-[9px] text-slate-400 font-bold">BAIK / A</p>
                             </div>
                         </div>
                         <div class="pt-4 border-t border-slate-100 flex justify-end">
                             <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl shadow-md shadow-emerald-200 hover:-translate-y-0.5 transition-all flex items-center space-x-2 text-sm">
                                 <i class="fas fa-save"></i> <span>Simpan Statistik</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Informasi Kontak -->
+            <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-address-book"></i></div>
+                    <h3 class="font-black text-slate-800 text-sm uppercase tracking-tight">Informasi Kontak & Alamat</h3>
+                    <span class="ml-auto text-[10px] text-slate-400 font-bold bg-slate-100 px-3 py-1 rounded-full">Tampil di Halaman Utama</span>
+                </div>
+                <div class="p-6">
+                    <form action="<?= base_url('admin/update_pengaturan') ?>" method="POST" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Alamat Lengkap</label>
+                                <textarea name="kontak_alamat" rows="2" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"><?= htmlspecialchars($data['kontak_alamat'] ?? 'Jl. Raya Pagedangan - Legok RT 001/003 Desa Jatake, Kec. Pagedangan') ?></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nomor Telepon / WhatsApp</label>
+                                <input type="text" name="kontak_telepon" value="<?= htmlspecialchars($data['kontak_telepon'] ?? '(021) 1234-5678, 0812-3456-7890') ?>" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Alamat Email</label>
+                                <input type="text" name="kontak_email" value="<?= htmlspecialchars($data['kontak_email'] ?? 'info@misnurulikhlas.sch.id') ?>" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all">
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-100 flex justify-end">
+                            <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-xl shadow-md shadow-teal-200 hover:-translate-y-0.5 transition-all flex items-center space-x-2 text-sm">
+                                <i class="fas fa-save"></i>
+                                <span>Simpan Kontak</span>
                             </button>
                         </div>
                     </form>
@@ -183,9 +218,13 @@
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tes Baca &amp; Tulis</label>
                                     <input type="text" name="jadwal_g<?= $g ?>_sosial" value="<?= htmlspecialchars($data['jadwal'][$g-1]['sosial'] ?? '') ?>" placeholder="Tanggal Tes Baca &amp; Tulis" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
                                 </div>
-                                <div class="md:col-span-3">
+                                <div class="md:col-span-1">
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Pengumuman Hasil</label>
                                     <input type="text" name="jadwal_g<?= $g ?>_hasil" value="<?= htmlspecialchars($data['jadwal'][$g-1]['hasil'] ?? '') ?>" placeholder="Tanggal Pengumuman Hasil" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Daftar Ulang</label>
+                                    <input type="text" name="jadwal_g<?= $g ?>_daftar_ulang" value="<?= htmlspecialchars($data['jadwal'][$g-1]['daftar_ulang'] ?? '') ?>" placeholder="10 - 15 Juli 2026 (Datang Langsung)" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
                                 </div>
                             </div>
                         </div>
@@ -199,10 +238,42 @@
                 </div>
             </div>
 
+            <!-- Penjadwalan Tes Otomatis -->
+            <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-clipboard-list"></i></div>
+                    <h3 class="font-black text-slate-800 text-sm uppercase tracking-tight">Penjadwalan Tes Otomatis</h3>
+                    <span class="ml-auto text-[10px] text-slate-400 font-bold bg-slate-100 px-3 py-1 rounded-full">Sistem Pembagian Jadwal</span>
+                </div>
+                <div class="p-6">
+                    <form action="<?= base_url('admin/update_pengaturan') ?>" method="POST" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tanggal Mulai Tes</label>
+                                <input type="date" name="tes_start_date" value="<?= htmlspecialchars($data['tes_start_date'] ?? '') ?>" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tanggal Akhir Tes</label>
+                                <input type="date" name="tes_end_date" value="<?= htmlspecialchars($data['tes_end_date'] ?? '') ?>" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Kuota Peserta Per Hari</label>
+                                <input type="number" name="tes_quota_per_day" min="1" value="<?= htmlspecialchars($data['tes_quota_per_day'] ?? 20) ?>" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all" required>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-100 flex justify-end">
+                            <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl shadow-md shadow-teal-200 hover:-translate-y-0.5 transition-all flex items-center space-x-2 text-sm">
+                                <i class="fas fa-save"></i> <span>Simpan Pengaturan Tes</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- Rilis Pengumuman Kelulusan -->
             <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-fadeUp">
                 <div class="px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-bullhorn"></i></div>
+                    <div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-bullhorn"></i></div>
                     <h3 class="font-black text-slate-800 text-sm uppercase tracking-tight">Rilis Pengumuman Kelulusan</h3>
                     <span class="ml-auto text-[10px] text-slate-400 font-bold bg-slate-100 px-3 py-1 rounded-full">Countdown Kelulusan</span>
                 </div>
@@ -228,13 +299,44 @@
                         </div>
                         
                         <div class="pt-4 border-t border-slate-100 flex justify-end">
-                            <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold rounded-xl shadow-md shadow-indigo-200 hover:-translate-y-0.5 transition-all flex items-center space-x-2 text-sm">
+                            <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl shadow-md shadow-emerald-200 hover:-translate-y-0.5 transition-all flex items-center space-x-2 text-sm">
                                 <i class="fas fa-save"></i> <span>Simpan Pengaturan Rilis</span>
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
+
+        <!-- Upload Panduan PPDB -->
+        <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-fadeUp delay-1">
+            <div class="px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-center space-x-3">
+                <div class="w-8 h-8 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-file-pdf"></i></div>
+                <h3 class="font-black text-slate-800 text-sm uppercase tracking-tight">Upload Panduan PPDB</h3>
+            </div>
+            <div class="p-6">
+                <form action="<?= base_url('admin/upload_panduan') ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-1">
+                            <label class="block text-sm font-bold text-slate-700 mb-2">File Panduan (Format PDF)</label>
+                            <input type="file" name="file_panduan" accept=".pdf" required class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition-colors cursor-pointer">
+                            <p class="mt-2 text-[11px] text-slate-400 font-semibold">Maksimal ukuran file 5MB. File ini akan tampil di dashboard calon siswa saat klik "Baca Panduan".</p>
+                        </div>
+                        <?php if(!empty($data['panduan_ppdb'])): ?>
+                        <div class="w-48 bg-slate-50 border border-slate-200 rounded-xl p-4 text-center shrink-0">
+                            <div class="text-teal-500 text-3xl mb-2"><i class="fas fa-file-pdf"></i></div>
+                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-2">Panduan Tersedia</p>
+                            <a href="<?= base_url($data['panduan_ppdb']) ?>" target="_blank" class="inline-block px-4 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-teal-600 hover:bg-slate-50 transition-colors shadow-sm">Lihat File</a>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex justify-end">
+                        <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-xl shadow-md shadow-teal-200 hover:-translate-y-0.5 transition-all flex items-center space-x-2 text-sm">
+                            <i class="fas fa-upload"></i> <span>Upload Dokumen</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         </div>
     </main>
